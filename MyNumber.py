@@ -6,6 +6,11 @@
 import math
 
 class MyNumber(object):
+    # has 2 member variables
+    # bool is_fraction
+    # ? value
+    # if is_fraction is False, value will be a float
+    # if is_fraction is True, value will be (int,int)
     def __init__(self,value):
         # value is either float
         # or tuple(int,int)
@@ -30,6 +35,8 @@ class MyNumber(object):
         else:
             raise TypeError("Expected float or tuple")
     def __str__(self):
+        # returns a string representation of self.value
+        # will use proper fractions over improper fractions
         if self.is_fraction:
             whole = self.value[0] // self.value[1]
             part = self.value[0] % self.value[1]
@@ -38,25 +45,29 @@ class MyNumber(object):
                     # the value is zero
                     return "0"
                 else:
-                    # it's a proper fraction
+                    # it's a short fraction
                     return str(part) + "/" + str(self.value[1])
             else:
-                # it's an improper fraction
+                # it's an long fraction
                 if part == 0:
                     # it's a whole number
                     return str(whole)
                 else:
-                    # it's a true improper fraction
+                    # it's a true long fraction
                     return str(whole) + " " + str(part) + "/" + str(self.value[1])
         else:
             return str(self.value)
     def as_float(self):
+        # returns a version of this object
+        # where is_fraction will be False
         if self.is_fraction:
             n = float(self.value[0]) / float(self.value[1])
             return MyNumber(n)
         else:
             return self
     def as_fraction(self,d):
+        # returns a version of this object
+        # where is_fraction will be True
         if self.is_fraction:
             return self
         # implements Farey sequence iteration
@@ -120,7 +131,7 @@ class MyNumber(object):
                 return MyNumber((n,d))
         else:
             # at least one of the inputs is not a fraction
-            # we will return a floating point number
+            # we will return a floating point MyNumber
             n = self.as_float().value + other.as_float().value
             return MyNumber(n)
     def __mul__(self,other):
@@ -136,15 +147,23 @@ class MyNumber(object):
             return MyNumber((n,d))
         else:
             # at least one is a floating-point number
-            # return a floating-point number
+            # return a floating-point MyNumber
             n = self.as_float().value * other.as_float().value
             return MyNumber(n)
     @staticmethod
     def from_string(s):
+        # convert a string to an appropriate
+        # MyNumber
+        # integers -> fraction with denominator 1
+        # floats -> floats
+        # short fractions -> fractions
+        # long fractions -> fractions
         if type(s) != str:
             raise TypeError("Expected s to be a string")
         # int is the most restrictive
         found = False
+        # found will indicate that we are ready
+        # to return a value
         try:
             n = int(s)
             found = True
@@ -152,6 +171,7 @@ class MyNumber(object):
             # it's not an integer
             pass
         if found:
+            # n is the int representation of s
             return MyNumber((n,1))
         # float is less restrictive
         try:
@@ -161,9 +181,13 @@ class MyNumber(object):
             # it's not a float
             pass
         if found:
+            # n is the float representation of s
+            # s does not encode an int, even if the
+            # value is an integer
             return MyNumber(n)
         # we either have a fraction or garbage
         halves = s.split("/")
+        # halves should be the two parts of the fraction
         if len(halves) != 2:
             raise ValueError("String count not be converted to MyNumber")
         try:
@@ -174,16 +198,28 @@ class MyNumber(object):
             d = d // gcd
             found = True
         except:
-            # it's not a proper fraction
-            # but it may still be an inproper fraction
+            # it's not a short fraction
+            # but it may still be a long fraction
             pass
         if found:
+            # n is the int representation of s before the /
+            # d is the int representation of s after the /
+            # (reduced by gcd)
             return MyNumber((n,d))
+        # at this point, it can only be a long fraction
+        # or garbage
         front_half = halves[0].split(" ")
+        # front half is everything before the
+        # / character, diliminated by spaces
         front_half_meaningful = []
         for segment in front_half:
             if len(segment) > 0:
                 front_half_meaningful.append(segment)
+        # front_half_meaningful are all of the nonempty segments
+        # of front_half
+        # ideally, there should only be two nonempty segments
+        # the first will the the whole number part of the fraction
+        # the second will be the numerator
         if len(front_half_meaningful) != 2:
             raise ValueError("String count not be converted to MyNumber")
         try:
@@ -196,9 +232,12 @@ class MyNumber(object):
             d = d // gcd
             found = True
         except:
-            # it's not an improper function
+            # it's not an long function
             # it's garbage
             pass
         if found:
+            # n_total will be the numerator of the improper fraction representation
+            # d will be the denominator of the improper fraction representation
+            # (both reduced by gcd)
             return MyNumber((n_total,d))
         raise ValueError("String count not be converted to MyNumber")
