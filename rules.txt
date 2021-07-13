@@ -1,0 +1,141 @@
+7 types of rules
+
+in order of precedence:
+capital words are those used to match a pattern
+
+
+
+1. hold, do nothing
+
+@hold UNIT SELECTOR
+
+
+2. renaming
+
+SELECTOR is selector
+
+bean.garbanzo is chickpea
+soymilk is milk.soy
+
+(does not apply if query already has a prefix (same or different))
+
+
+3. addition and removal of properties
+
+UNIT SELECTOR (+ property)
+UNIT SELECTOR (- property)
+
+(does not apply if property is already added or removed)
+
+$ chickpea?dry 
+$ chickpea?!cooked?!uncooked + cooked
+
+
+4. prefixing
+
+SELECTOR is selector
+
+chickpea is legume
+legume is vegetable
+
+
+5. unit conversion
+
+# UNIT SELECTOR is # unit selector
+
+
+6. number conversion
+
+@dec UNIT SELECTOR
+
+@frac UNIT SELECTOR
+
+(does not apply if already converted)
+
+
+7. addition of ingredients
+
+is item & item
+
+rice is $ & sauce.soy
+
+(this will add one unit of soy sauce to the
+shopping list for every unit of rice)
+
+1 bowl rice is $ $ $ & 1 tsp sauce.soy
+
+you can omit the unnessessary &
+
+rice is & sauce.soy
+1 bowl rice is & 1 tsp sauce.soy
+
+
+of course, you will likely want a more general formula
+
+1 volume rice is & 0.01 $ sauce.soy
+
+
+
+things you can select on:
+
+UNIT
+CATEGORY.CATEGORY.CATEGORY?PROPERTY?PROPERTY
+UNIT CATEGORY.CATEGORY.CATEGORY?PROPERTY?PROPERTY
+
+can use $ for wildcarding
+can use ! to negate a property
+
+
+The left side can have one of five forms
+
+SELECTOR
+UNIT SELECTOR
+# UNIT SELECTOR
+# SELECTOR
+@command UNIT SELECTOR
+
+we can distinguish by the number of words
+the second and fourth forms can be distinguished
+by if the first word is a valid number
+
+operations
+is rename or unit conversion, add a prefix
++ add a property
+- remove a property
+
+
+example
+
+15 fl_oz chickpea + cooked is 1 can
+bean.garbanzo is a chickpea
+chickpea - cooked - uncooked - dry is + cooked
+chickpea + dry is - dry + uncooked
+1 volume chickpea + cooked is 1/3 $ $ + cooked - uncooked & 1 $ water - $
+
+renaming, conversion, and prefixing all use "is" operator once
+
+renaming: A is B
+conversion: # A is # B
+conversion: # A B is # C D
+conversion: # A B is # C
+prefixing: A is a B
+
++ $ keeps all properties, where they would otherwise
+be discarded
+- $ removes all properties, where they would otherwise be kept
+
+example with units:
+
+1 kg is 1000 g
+1 mg is 1/1000 g
+g is a mass
+
+100 g carrot is 1 count carrot
+
+declarations
+
+A (assumed to be 1 meals_worth)
+# A (assumed to be in count units)
+# A B
+
+@import path
