@@ -48,7 +48,10 @@ class Pattern(object):
 
 class SinglePattern(Pattern):
     def __init__(self,rule,props):
-        listOfStrings(rule)
+        if (rule is None) and (len(props) == 0):
+            raise ValueError("must enter at least one criterion")
+        if rule is not None:
+            listOfStrings(rule)
         dictStrBool(props)
         self.rule = rule
         self.props = props
@@ -66,10 +69,13 @@ class SinglePattern(Pattern):
             # we need to check props
             # this means that we can
             # only match against the name
-            res = self._compare(self.rule,ig.name)
-            if res is not None:
-                if self._check_props(self.props,ig.props):
-                    return (2,res)
+            if self.rule is None:
+                return (2,-1)
+            else:
+                res = self._compare(self.rule,ig.name)
+                if res is not None:
+                    if self._check_props(self.props,ig.props):
+                        return (2,res)
         return (0,None)
 
 class DoublePattern(Pattern):
