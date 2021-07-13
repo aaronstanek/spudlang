@@ -55,6 +55,9 @@ class SinglePattern(Pattern):
         dictStrBool(props)
         self.rule = rule
         self.props = props
+        self.specificity = len(props)
+        if rule is not None:
+            self.specificity += len(rule)
     def matches(self,ig):
         if type(ig) != Ingredient:
             raise TypeError("Expected ig to be of type Ingredient")
@@ -89,6 +92,11 @@ class DoublePattern(Pattern):
         self.rule_unit = rule_unit
         self.rule_name = rule_name
         self.props = props
+        self.specificity = len(props)
+        if rule_unit is not None:
+            self.specificity += len(rule_unit)
+        if rule_name is not None:
+            self.specificity += len(rule_name)
     def matches(self,ig):
         if type(ig) != Ingredient:
             raise TypeError("Expected ig to be of type Ingredient")
