@@ -27,6 +27,24 @@ class Pattern(object):
             if matches:
                 return sample_index
         return None
+    @staticmethod
+    def _check_props(rule,sample):
+        # rule is a dict(str->bool)
+        # sample is a set(str)
+        # we want to make sure that all the
+        # elements marked as True appear in the sample
+        # and none of those marked False appear
+        # returns True for a match, False otherwise
+        for prop in rule:
+            if rule[prop]:
+                # it must exist in the set to match
+                if prop not in sample:
+                    return False
+            else:
+                # it cannot exist in the set to match
+                if prop in sample:
+                    return False
+        return True
 
 class SinglePattern(Pattern):
     def __init__(self,rule):
