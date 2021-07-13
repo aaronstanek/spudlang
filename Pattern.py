@@ -74,8 +74,13 @@ class SinglePattern(Pattern):
 
 class DoublePattern(Pattern):
     def __init__(self,rule_unit,rule_name,props):
-        listOfStrings(rule_unit)
-        listOfStrings(rule_name)
+        # if rule_unit or rule_name are none, we interpret them as wildcards
+        if (rule_unit is None) and (rule_name is None) and (len(props) == 0):
+            raise ValueError("must enter at least one criterion")
+        if rule_unit is not None:
+            listOfStrings(rule_unit)
+        if rule_name is not None:
+            listOfStrings(rule_name)
         dictStrBool(props)
         self.rule_unit = rule_unit
         self.rule_name = rule_name
@@ -83,12 +88,18 @@ class DoublePattern(Pattern):
     def matches(self,ig):
         if type(ig) != Ingredient:
             raise TypeError("Expected ig to be of type Ingredient")
-        res_unit = self._compare(self.rule_unit,ig.unit)
-        if res_unit is None:
-            return (0,None,None)
-        res_name = self._compare(self.rule_name,ig.name)
-        if res_name is None:
-            return (0,None,None)
+        if self.rule_unit is None:
+            res_unit = -1
+        else:
+            res_unit = self._compare(self.rule_unit,ig.unit)
+            if res_unit is None:
+                return (0,None,None)
+        if self.rule_name is None:
+            res_name = -1
+        else:
+            res_name = self._compare(self.rule_name,ig.name)
+            if res_name is None:
+                return (0,None,None)
         if self._check_props(self.props,ig.props):
             return (1,res_unit,res_name)
         else:
