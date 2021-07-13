@@ -119,6 +119,18 @@ class TestMyNumber(unittest.TestCase):
         self.assertFalse(c.is_fraction)
         self.assertTrue(abs(c.value - 100.57) < 0.01)
 
+    def test_multiplicative_inverse(self):
+        a = MyNumber((13,9))
+        b = a.multiplicative_inverse()
+        self.assertEqual(type(b),MyNumber)
+        self.assertTrue(b.is_fraction)
+        self.assertEqual(b.value,(9,13))
+        a = MyNumber(2.0)
+        b = a.multiplicative_inverse()
+        self.assertEqual(type(b),MyNumber)
+        self.assertFalse(b.is_fraction)
+        self.assertEqual(b.value,0.5)
+
     def test_from_string(self):
         a = MyNumber.from_string("3")
         self.assertEqual(type(a),MyNumber)

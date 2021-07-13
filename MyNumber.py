@@ -151,6 +151,7 @@ class MyNumber(object):
             n = self.as_float().value * other.as_float().value
             return MyNumber(n)
     def multiplicative_inverse(self):
+        # returns the multiplicative inverse, if it exists
         if self.is_fraction:
             return MyNumber( (self.value[1],self.value[0]) )
         else:
