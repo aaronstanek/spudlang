@@ -43,3 +43,21 @@ class SinglePattern(Pattern):
             return (1,res)
         else:
             return (0,None)
+
+class DoublePattern(Pattern):
+    def __init__(self,rule_unit,rule_name):
+        listOfStrings(rule_unit)
+        listOfStrings(rule_name)
+        self.rule_unit = rule_unit
+        self.rule_name = rule_name
+    def matches(self,ig):
+        if type(ig) != Ingredient:
+            raise TypeError("Expected ig to be of type Ingredient")
+        res_unit = self._compare(self.rule_unit,ig.unit)
+        if res_unit is None:
+            return (0,None,None)
+        res_name = self._compare(self.rule_name,ig.name)
+        if res_name is None:
+            return (0,None,None)
+        else:
+            return (1,res_unit,res_name)
