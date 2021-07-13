@@ -1,7 +1,6 @@
 # this file defines the Ingredient class
 # it can represent an item, its quantities
 
-from typing import Type
 from MyNumber import MyNumber
 
 class Ingredient(object):
