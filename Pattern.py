@@ -69,13 +69,11 @@ class SinglePattern(Pattern):
             # we need to check props
             # this means that we can
             # only match against the name
-            if self.rule is None:
-                return (2,-1)
-            else:
-                res = self._compare(self.rule,ig.name)
-                if res is not None:
-                    if self._check_props(self.props,ig.props):
-                        return (2,res)
+            # self.rule cannot be None
+            res = self._compare(self.rule,ig.name)
+            if res is not None:
+                if self._check_props(self.props,ig.props):
+                    return (2,res)
         return (0,None)
 
 class DoublePattern(Pattern):
