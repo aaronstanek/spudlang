@@ -150,6 +150,11 @@ class MyNumber(object):
             # return a floating-point MyNumber
             n = self.as_float().value * other.as_float().value
             return MyNumber(n)
+    def multiplicative_inverse(self):
+        if self.is_fraction:
+            return MyNumber( (self.value[1],self.value[0]) )
+        else:
+            return MyNumber( 1.0 / self.value )
     @staticmethod
     def from_string(s):
         # convert a string to an appropriate
