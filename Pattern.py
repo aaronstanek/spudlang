@@ -7,7 +7,7 @@
 # x is index of the match in the sample
 # DoublePattern checks for a match in both the unit and name
 
-from FormatCheck import listOfStrings
+from FormatCheck import listOfStrings, dictStrBool
 from Ingredient import Ingredient
 
 class Pattern(object):
@@ -47,20 +47,30 @@ class Pattern(object):
         return True
 
 class SinglePattern(Pattern):
-    def __init__(self,rule):
+    def __init__(self,rule,props):
         listOfStrings(rule)
+        dictStrBool(props)
         self.rule = rule
+        self.props = props
     def matches(self,ig):
         if type(ig) != Ingredient:
             raise TypeError("Expected ig to be of type Ingredient")
-        res = self._compare(self.rule,ig.name)
-        if res is not None:
-            return (2,res)
-        res = self._compare(self.rule,ig.unit)
-        if res is not None:
-            return (1,res)
+        if len(self.props) == 0:
+            res = self._compare(self.rule,ig.name)
+            if res is not None:
+                return (2,res)
+            res = self._compare(self.rule,ig.unit)
+            if res is not None:
+                return (1,res)    
         else:
-            return (0,None)
+            # we need to check props
+            # this means that we can
+            # only match against the name
+            res = self._compare(self.rule,ig.name)
+            if res is not None:
+                if self._check_props(self.props,ig.props):
+                    return (2,res)
+        return (0,None)
 
 class DoublePattern(Pattern):
     def __init__(self,rule_unit,rule_name):
