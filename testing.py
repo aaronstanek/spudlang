@@ -183,7 +183,7 @@ class TestPattern(unittest.TestCase):
         rule = ["veg","pepper","bell","red","very"]
         self.assertEqual(Pattern._compare(rule,sample),None)
     
-    def test_single_pattern(self):
+    def test_single_pattern_true(self):
         with self.assertRaises(Exception):
             SinglePattern(None,{})
         a = Ingredient(MyNumber((5,1)),["count"],["pepper","bell","red"],{"chopped"})
@@ -191,6 +191,12 @@ class TestPattern(unittest.TestCase):
         self.assertEqual(b.matches(a),(2,-1))
         b = SinglePattern(["bell"],{})
         self.assertEqual(b.matches(a),(2,1))
+        b = SinglePattern(["bell","red"],{"chopped":True})
+        self.assertEqual(b.matches(a),(2,1))
+        b = SinglePattern(["pepper"],{"minced":False})
+        self.assertEqual(b.matches(a),(2,0))
+        b = SinglePattern(["count"],{"minced":False,"chopped":True})
+        self.assertEqual(b.matches(a),(1,0))
 
 if __name__ == '__main__':
     unittest.main()
