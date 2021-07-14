@@ -1,6 +1,8 @@
 import unittest
 
 from MyNumber import MyNumber
+from Ingredient import Ingredient
+from Pattern import SinglePattern, DoublePattern
 
 class TestMyNumber(unittest.TestCase):
 
@@ -148,6 +150,21 @@ class TestMyNumber(unittest.TestCase):
         self.assertEqual(type(a),MyNumber)
         self.assertTrue(a.is_fraction)
         self.assertEqual(a.value,(7,2))
+
+class TestPattern(unittest.TestCase):
+
+    def test_ingredient_creation(self):
+        a = Ingredient(MyNumber((5,1)),["count"],["pepper","bell","red"],{"chopped"})
+        self.assertEqual(type(a),Ingredient)
+        with self.assertRaises(Exception):
+            Ingredient(MyNumber((5,1)),[],[],set())
+    
+    def test_single_pattern(self):
+        with self.assertRaises(Exception):
+            SinglePattern(None,{})
+        a = Ingredient(MyNumber((5,1)),["count"],["pepper","bell","red"],{"chopped"})
+        b = SinglePattern(["bell"],{})
+        self.assertEqual(b.matches(a),(2,1))
 
 if __name__ == '__main__':
     unittest.main()
