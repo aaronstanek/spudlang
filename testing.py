@@ -188,7 +188,7 @@ class TestPattern(unittest.TestCase):
             SinglePattern(None,{})
         a = Ingredient(MyNumber((5,1)),["count"],["pepper","bell","red"],{"chopped"})
         b = SinglePattern(None,{"chopped":True})
-        self.assertEqual(b.matches(a),(2,None))
+        self.assertEqual(b.matches(a),(2,-1))
         b = SinglePattern(["bell"],{})
         self.assertEqual(b.matches(a),(2,1))
 

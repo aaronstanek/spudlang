@@ -14,3 +14,4 @@ class Ingredient(object):
         self.count = count
         self.unit = unit
         self.name = name
+        self.props = props
