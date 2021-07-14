@@ -159,12 +159,29 @@ class TestPattern(unittest.TestCase):
         with self.assertRaises(Exception):
             Ingredient(MyNumber((5,1)),[],[],set())
 
-    def test_compare(self):
+    def test_compare_true(self):
         sample = ["pepper","bell","red"]
         rules = [["pepper"],["bell"],["red"]]
         for rule_n in range(len(rules)):
             rule = rules[rule_n]
             self.assertEqual(Pattern._compare(rule,sample),rule_n)
+        rules = [["pepper","bell"],["bell","red"]]
+        for rule_n in range(len(rules)):
+            rule = rules[rule_n]
+            self.assertEqual(Pattern._compare(rule,sample),rule_n)
+        rule = sample
+        self.assertEqual(Pattern._compare(rule,sample),0)
+
+    def test_compare_false(self):
+        sample = ["pepper","bell","red"]
+        rule = ["radish"]
+        self.assertEqual(Pattern._compare(rule,sample),None)
+        rule = ["pepper","radish"]
+        self.assertEqual(Pattern._compare(rule,sample),None)
+        rule = ["red","very"]
+        self.assertEqual(Pattern._compare(rule,sample),None)
+        rule = ["veg","pepper","bell","red","very"]
+        self.assertEqual(Pattern._compare(rule,sample),None)
     
     def test_single_pattern(self):
         with self.assertRaises(Exception):
