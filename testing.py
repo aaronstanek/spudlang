@@ -217,5 +217,31 @@ class TestPattern(unittest.TestCase):
         b = SinglePattern(["count"],{"chopped":False})
         self.assertEqual(b.matches(a),(0,None))
 
+    def test_double_pattern_true(self):
+        with self.assertRaises(Exception):
+            DoublePattern(None,None,{})
+        a = Ingredient(MyNumber((5,1)),["count"],["pepper","bell","red"],{"chopped"})
+        b = DoublePattern(["count"],["pepper","bell"],{})
+        self.assertEqual(b.matches(a),(1,0,0))
+        b = DoublePattern(None,["red"],{"minced":False})
+        self.assertEqual(b.matches(a),(1,-1,2))
+        b = DoublePattern(["count"],None,{"minced":False,"chopped":True})
+        self.assertEqual(b.matches(a),(1,0,-1))
+        b = DoublePattern(["count"],["pepper"],{})
+        self.assertEqual(b.matches(a),(1,0,0))
+        b = DoublePattern(None,None,{"minced":False,"chopped":True})
+        self.assertEqual(b.matches(a),(1,-1,-1))
+    
+    def test_double_pattern_false(self):
+        a = Ingredient(MyNumber((5,1)),["count"],["pepper","bell","red"],{"chopped"})
+        b = DoublePattern(["count"],["bell","pepper"],{})
+        self.assertEqual(b.matches(a),(0,None,None))
+        b = DoublePattern(None,["red"],{"chopped":False,"minced":True})
+        self.assertEqual(b.matches(a),(0,None,None))
+        b = DoublePattern(["count"],["much","pepper"],{})
+        self.assertEqual(b.matches(a),(0,None,None))
+        b = DoublePattern(["g","count"],["pepper","bell","red"],{"chopped":True})
+        self.assertEqual(b.matches(a),(0,None,None))
+
 if __name__ == '__main__':
     unittest.main()
