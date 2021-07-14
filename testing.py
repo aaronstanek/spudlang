@@ -198,5 +198,10 @@ class TestPattern(unittest.TestCase):
         b = SinglePattern(["count"],{})
         self.assertEqual(b.matches(a),(1,0))
 
+    def test_single_pattern_false(self):
+        a = Ingredient(MyNumber((5,1)),["count"],["pepper","bell","red"],{"chopped"})
+        b = SinglePattern(["count"],{"minced":False,"chopped":True})
+        self.assertEqual(b.matches(a),(0,None))
+
 if __name__ == '__main__':
     unittest.main()
