@@ -158,6 +158,10 @@ class TestPattern(unittest.TestCase):
         self.assertEqual(type(a),Ingredient)
         with self.assertRaises(Exception):
             Ingredient(MyNumber((5,1)),[],[],set())
+    
+    def test_pattern_creation(self):
+        with self.assertRaises(Exception):
+            Pattern()
 
     def test_compare_true(self):
         sample = ["pepper","bell","red"]

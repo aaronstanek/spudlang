@@ -11,6 +11,8 @@ from FormatCheck import listOfStrings, dictStrBool
 from Ingredient import Ingredient
 
 class Pattern(object):
+    def __init__(self):
+        raise Exception("creating an instance of Pattern base class is forbidden")
     @staticmethod
     def _compare(rule,sample):
         # rule and sample are both lists of strings
