@@ -19,7 +19,7 @@ class Pattern(object):
         # returns the index of sample where rule begins
         # or returns None if no match
         for sample_index in range(len(sample)-len(rule)+1):
-            matches = False
+            matches = True
             for rule_index in range(len(rule)):
                 if rule[rule_index] != sample[sample_index+rule_index]:
                     matches = False
