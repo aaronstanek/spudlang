@@ -195,7 +195,7 @@ class TestPattern(unittest.TestCase):
         self.assertEqual(b.matches(a),(2,1))
         b = SinglePattern(["pepper"],{"minced":False})
         self.assertEqual(b.matches(a),(2,0))
-        b = SinglePattern(["count"],{"minced":False,"chopped":True})
+        b = SinglePattern(["count"],{})
         self.assertEqual(b.matches(a),(1,0))
 
 if __name__ == '__main__':
