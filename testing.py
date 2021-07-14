@@ -2,7 +2,7 @@ import unittest
 
 from MyNumber import MyNumber
 from Ingredient import Ingredient
-from Pattern import SinglePattern, DoublePattern
+from Pattern import Pattern, SinglePattern, DoublePattern
 
 class TestMyNumber(unittest.TestCase):
 
@@ -158,6 +158,11 @@ class TestPattern(unittest.TestCase):
         self.assertEqual(type(a),Ingredient)
         with self.assertRaises(Exception):
             Ingredient(MyNumber((5,1)),[],[],set())
+
+    def test_compare(self):
+        rule = ["bell"]
+        sample = ["pepper","bell","red"]
+        self.assertEqual(Pattern._compare(rule,sample),1)
     
     def test_single_pattern(self):
         with self.assertRaises(Exception):
