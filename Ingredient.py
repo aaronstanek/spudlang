@@ -3,6 +3,7 @@
 
 from MyNumber import MyNumber
 from FormatCheck import listOfStrings, setOfStrings
+from copy import copy
 
 class Ingredient(object):
     def __init__(self,count,unit,name,props):
@@ -15,3 +16,8 @@ class Ingredient(object):
         self.unit = unit
         self.name = name
         self.props = props
+    def duplicate(self):
+        return Ingredient(
+            self.count,self.unit[:],
+            self.name[:],copy(self.props)
+            )
