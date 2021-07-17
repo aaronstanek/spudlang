@@ -4,7 +4,6 @@
 
 from Ingredient import Ingredient
 from FormatCheck import listOfStrings
-from copy import deepcopy
 
 class RuleOutput(object):
     def __init__(self):
@@ -14,12 +13,21 @@ class RenamingRuleOutput(RuleOutput):
     def __init__(self,output_name):
         listOfStrings(output_name)
         self.output_name = output_name
-    def apply(self,ig,on_units):
+    def apply(self,ig,match_token):
+        # match token must come from SinglePattern
         if type(ig) != Ingredient:
             raise TypeError("Expected ig to be an Ingredient")
-        output = deepcopy(ig)
-        if on_units:
-            output.units = deepcopy(self.output_name)
+        if type(match_token) != tuple:
+            raise TypeError("Expected tuple")
+        if len(match_token) != 2:
+            raise ValueError("Expected tuple of length 2")
+        if not all(map(lambda x: type(x) == int, match_token)):
+            raise TypeError("Expected tuple filled with ints")
+        output = ig.duplicate()
+        if match_token[0] == 1:
+            # editing unit
+            output.unit = output.unit[:max(0,match_token[1])] + self.output_name
         else:
-            output.name = deepcopy(self.output_name)
+            #editing name
+            output.name = output.name[:max(0,match_token[1])] + self.output_name
         return output
