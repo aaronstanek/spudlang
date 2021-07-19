@@ -21,6 +21,11 @@ class RuleOutput(object):
         if not all(map(lambda x: type(x) == int, match_token)):
             raise TypeError("Expected tuple filled with ints")
 
+class NoneRuleOutput(RuleOutput):
+    @staticmethod
+    def apply(ig,match_token):
+        return ig
+
 class RenamingRuleOutput(RuleOutput):
     def __init__(self,output_name):
         listOfStrings(output_name)
