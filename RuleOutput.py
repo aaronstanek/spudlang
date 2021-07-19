@@ -2,8 +2,9 @@
 # and its subclasses
 # these perform singular operators on Ingredient objects
 
+from typing import Type
 from Ingredient import Ingredient
-from FormatCheck import listOfStrings
+from FormatCheck import listOfStrings, setOfStrings, listOfTupleStringBools
 
 class RuleOutput(object):
     def __init__(self):
@@ -61,4 +62,22 @@ class PrefixingRuleOutput(RuleOutput):
         else:
             # editing name
             output.name = self.prefix + output.name
+        return output
+
+class PropertiesRuleOutput(RuleOutput):
+    def __init__(self,base,edits):
+        if not isinstance(base,RuleOutput):
+            raise TypeError("Expected child class of RuleOutput")
+        listOfTupleStringBools(edits)
+        self.base = base
+        self.edits = edits
+    def apply(self,ig,match_token):
+        output = self.base.apply(ig,match_token).duplicate()
+        for edit in self.edits:
+            # edit is (str,bool)
+            if edit[1]:
+                output.props.add(edit[0])
+            else:
+                if edit[0] in output.props:
+                    output.props.remove(edit[0])
         return output
