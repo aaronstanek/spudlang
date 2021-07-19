@@ -8,6 +8,17 @@ from FormatCheck import listOfStrings
 class RuleOutput(object):
     def __init__(self):
         raise Exception("creating an instance of RuleOutput base class is forbidden")
+    def check_conformity(ig,match_token,match_token_length):
+        if type(ig) != Ingredient:
+            raise TypeError("Expected ig to be an Ingredient")
+        if type(match_token) != tuple:
+            raise TypeError("Expected tuple")
+        if type(match_token_length) != int:
+            raise TypeError("Expected int")
+        if len(match_token) != match_token_length:
+            raise ValueError("Expected tuple of length "+str(match_token_length))
+        if not all(map(lambda x: type(x) == int, match_token)):
+            raise TypeError("Expected tuple filled with ints")
 
 class RenamingRuleOutput(RuleOutput):
     def __init__(self,output_name):
@@ -31,3 +42,8 @@ class RenamingRuleOutput(RuleOutput):
             #editing name
             output.name = output.name[:max(0,match_token[1])] + self.output_name
         return output
+
+class PrefixingRuleOutput(RuleOutput):
+    def __init__(self,prefix):
+        listOfStrings(prefix)
+        self.prefix = prefix
