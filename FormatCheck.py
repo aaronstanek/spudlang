@@ -11,6 +11,19 @@ def listOfStrings(x):
     if not all(map(lambda y: (len(y) > 0) if (type(y) == str) else False , x)):
         raise TypeError("Expected elements of list to be nonempty strings")
 
+def listOfTupleStringBools(x):
+    if type(x) != list:
+        raise TypeError("Expected list")
+    for elem in x:
+        if type(elem) != tuple:
+            raise TypeError("Expected tuple")
+        if len(elem) != 2:
+            raise ValueError("Expected tuple of length 2")
+        if type(elem[0]) != str:
+            raise TypeError("Expected string")
+        if type(elem[1]) != bool:
+            raise TypeError("Expected bool")
+
 def setOfStrings(x):
     # returns if x is a set of strings
     # throws and expection otherwise
