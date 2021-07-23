@@ -80,6 +80,31 @@ class SingleConvertingRuleOutput(RenamingRuleOutput):
         output.count = output.count * self.ratio
         return output
 
+class DoubleConvertingRuleOutput(object):
+    def __init__(self,ratio,output_unit,output_name):
+        # ratio, output_unit, and output_name
+        # may each be None to indicate a wildcard
+        if ratio is not None:
+            if type(ratio) != MyNumber:
+                raise TypeError("Expected MyNumber")
+        if output_unit is not None:
+            output_unit = RenamingRuleOutput(output_unit)
+        if output_name is not None:
+            output_name = RenamingRuleOutput(output_name)
+        self.ratio = ratio
+        self.output_unit = output_unit
+        self.output_name = output_name
+    def apply(self,ig,match_token):
+        # match_token must be from DoublePattern
+        if self.output_unit is not None:
+            ig = self.output_unit.apply(ig,(1,match_token[1]))
+        if self.output_name is not None:
+            ig = self.output_name.apply(ig,(2,match_token[2]))
+        if self.ratio is not None:
+            ig = ig.duplicate()
+            ig.count = ig.count * self.ratio
+        return ig
+
 class PropertiesRuleOutput(RuleOutput):
     def __init__(self,base,edits):
         if not isinstance(base,RuleOutput):
