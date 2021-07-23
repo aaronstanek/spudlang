@@ -118,7 +118,8 @@ renaming: A is B (wildcard forbidden)
 conversion: # A is # B (wildcard forbidden)
 conversion: # A B is # C D
 conversion: # A B is # C
-prefixing: A is a B (wildcard forbidden)
+prefixing: A (is) a B (wildcard forbidden)
+search and replace: A (is) (a) synonym (of) B
 
 + $ keeps all properties, where they would otherwise
 be discarded

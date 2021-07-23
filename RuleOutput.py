@@ -62,11 +62,30 @@ class PrefixingRuleOutput(RuleOutput):
         output = ig.duplicate()
         if match_token[0] == 1:
             # editing unit
-            # we know that match_token[1] == 0
             output.unit = self.prefix + output.unit
         else:
             # editing name
             output.name = self.prefix + output.name
+        return output
+
+class InsertingRuleOutput(RuleOutput):
+    def __init__(self,insertion):
+        listOfStrings(insertion)
+        self.insertion = insertion
+    def apply(self,ig,match_token):
+        # match token must come from SinglePattern
+        self.check_conformity(ig,match_token,2)
+        output = ig.duplicate()
+        if match_token[0] == 1:
+            # editing unit
+            output.unit = output.unit[:max(0,match_token[1])]
+            + self.insertion
+            + output.unit[max(0,match_token[1])+len(self.insertion):]
+        else:
+            # editing name
+            output.name = output.name[:max(0,match_token[1])]
+            + self.insertion
+            + output.name[max(0,match_token[1])+len(self.insertion):]
         return output
 
 class SingleConvertingRuleOutput(RenamingRuleOutput):
