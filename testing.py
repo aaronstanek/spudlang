@@ -5,8 +5,9 @@ from Ingredient import Ingredient
 from Pattern import Pattern, SinglePattern, DoublePattern
 from RuleOutput import (
     NoneRuleOutputInstance, RenamingRuleOutput,
-    PrefixingRuleOutput, SingleConvertingRuleOutput,
-    DoubleConvertingRuleOutput, PropertiesRuleOutput,
+    PrefixingRuleOutput, InsertingRuleOutput,
+    SingleConvertingRuleOutput, DoubleConvertingRuleOutput,
+    PropertiesRuleOutput,
     DecRuleOutputInstance, FracRuleOutputInstance
     )
 
@@ -304,6 +305,23 @@ class TestRuleOutput(unittest.TestCase):
         c = b.apply(a,(2,0))
         self.assertEqual(str(c.count),"5")
         self.assertEqual(c.name,["food","vegetable","pepper","bell","red"])
+        self.assertEqual(a.name,["pepper","bell","red"])
+        self.assertEqual(c.unit,["count"])
+        self.assertEqual(c.props,{"chopped"})
+
+    def test_insert(self):
+        a = Ingredient(MyNumber((5,1)),["count"],["pepper","bell","red"],{"chopped"})
+        b = InsertingRuleOutput(1,["fire"])
+        c = b.apply(a,(2,1))
+        self.assertEqual(str(c.count),"5")
+        self.assertEqual(c.name,["pepper","fire","red"])
+        self.assertEqual(a.name,["pepper","bell","red"])
+        self.assertEqual(c.unit,["count"])
+        self.assertEqual(c.props,{"chopped"})
+        b = InsertingRuleOutput(1,["banana","cabbage","watermelon"])
+        c = b.apply(a,(2,1))
+        self.assertEqual(str(c.count),"5")
+        self.assertEqual(c.name,["pepper","banana","cabbage","watermelon","red"])
         self.assertEqual(a.name,["pepper","bell","red"])
         self.assertEqual(c.unit,["count"])
         self.assertEqual(c.props,{"chopped"})

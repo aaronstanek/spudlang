@@ -69,8 +69,12 @@ class PrefixingRuleOutput(RuleOutput):
         return output
 
 class InsertingRuleOutput(RuleOutput):
-    def __init__(self,insertion):
-        listOfStrings(insertion)
+    def __init__(self,pattern_size,insertion):
+        if type(pattern_size) != int:
+            raise TypeError("Expeected int")
+        if insertion != []:
+            listOfStrings(insertion)
+        self.pattern_size = pattern_size
         self.insertion = insertion
     def apply(self,ig,match_token):
         # match token must come from SinglePattern
@@ -78,14 +82,10 @@ class InsertingRuleOutput(RuleOutput):
         output = ig.duplicate()
         if match_token[0] == 1:
             # editing unit
-            output.unit = output.unit[:max(0,match_token[1])]
-            + self.insertion
-            + output.unit[max(0,match_token[1])+len(self.insertion):]
+            output.unit = output.unit[:max(0,match_token[1])] + self.insertion + output.unit[max(0,match_token[1])+self.pattern_size:]
         else:
             # editing name
-            output.name = output.name[:max(0,match_token[1])]
-            + self.insertion
-            + output.name[max(0,match_token[1])+len(self.insertion):]
+            output.name = output.name[:max(0,match_token[1])] + self.insertion + output.name[max(0,match_token[1])+self.pattern_size:]
         return output
 
 class SingleConvertingRuleOutput(RenamingRuleOutput):
