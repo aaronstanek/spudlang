@@ -2,7 +2,7 @@
 # and its subclasses
 # these perform singular operators on Ingredient objects
 
-from typing import Type
+from MyNumber import MyNumber
 from Ingredient import Ingredient
 from FormatCheck import listOfStrings, setOfStrings, listOfTupleStringBools
 
@@ -67,6 +67,17 @@ class PrefixingRuleOutput(RuleOutput):
         else:
             # editing name
             output.name = self.prefix + output.name
+        return output
+
+class SingleConvertingRuleOutput(RenamingRuleOutput):
+    def __init__(self,ratio,output_name):
+        super().__init__(output_name)
+        if type(ratio) != MyNumber:
+            raise TypeError("Expected MyNumber")
+        self.ratio = ratio
+    def apply(self,ig,match_token):
+        output = super().apply(ig,match_token).duplicate()
+        output.count = output.count * self.ratio
         return output
 
 class PropertiesRuleOutput(RuleOutput):
