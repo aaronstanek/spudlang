@@ -4,7 +4,7 @@
 
 from MyNumber import MyNumber
 from Ingredient import Ingredient
-from FormatCheck import listOfStrings, setOfStrings, listOfTupleStringBools
+from FormatCheck import listOfStrings, listOfTupleStringBools
 
 class RuleOutput(object):
     def __init__(self):
@@ -76,6 +76,7 @@ class SingleConvertingRuleOutput(RenamingRuleOutput):
             raise TypeError("Expected MyNumber")
         self.ratio = ratio
     def apply(self,ig,match_token):
+        self.check_conformity(ig,match_token,2)
         output = super().apply(ig,match_token).duplicate()
         output.count = output.count * self.ratio
         return output
@@ -96,6 +97,7 @@ class DoubleConvertingRuleOutput(object):
         self.output_name = output_name
     def apply(self,ig,match_token):
         # match_token must be from DoublePattern
+        self.check_conformity(ig,match_token,3)
         if self.output_unit is not None:
             ig = self.output_unit.apply(ig,(1,match_token[1]))
         if self.output_name is not None:
