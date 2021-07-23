@@ -3,6 +3,7 @@ import unittest
 from MyNumber import MyNumber
 from Ingredient import Ingredient
 from Pattern import Pattern, SinglePattern, DoublePattern
+from RuleOutput import NoneRuleOutput, RenamingRuleOutput, PrefixingRuleOutput, PropertiesRuleOutput
 
 class TestMyNumber(unittest.TestCase):
 
@@ -251,6 +252,13 @@ class TestPattern(unittest.TestCase):
         self.assertEqual(b.matches(a),(0,None,None))
         b = DoublePattern(["g","count"],["pepper","bell","red"],{"chopped":True})
         self.assertEqual(b.matches(a),(0,None,None))
+
+class TestRuleOutput(unittest.TestCase):
+
+    def test_none(self):
+        a = Ingredient(MyNumber((5,1)),["count"],["pepper","bell","red"],{"chopped"})
+        b = NoneRuleOutput.apply(a,(None,None))
+        self.assertTrue(b is a)
 
 if __name__ == '__main__':
     unittest.main()
