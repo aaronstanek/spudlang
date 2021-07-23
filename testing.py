@@ -270,6 +270,10 @@ class TestRuleOutput(unittest.TestCase):
         c = b.apply(a,(1,0))
         self.assertEqual(c.unit,["kg"])
         self.assertEqual(a.unit,["count"])
+        b = RenamingRuleOutput(["black","ground"])
+        c = b.apply(a,(2,1))
+        self.assertEqual(c.name,["pepper","black","ground"])
+        self.assertEqual(a.name,["pepper","bell","red"])
 
 if __name__ == '__main__':
     unittest.main()
