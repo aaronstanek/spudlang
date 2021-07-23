@@ -101,6 +101,7 @@ DecRuleOutputInstance = DecRuleOutput()
 class FracRuleOutput(RuleOutput):
     def __init__(self):
         pass
+    @staticmethod
     def apply(ig,match_token):
         output = ig.duplicate()
         output.count = output.count.as_fraction(10)
