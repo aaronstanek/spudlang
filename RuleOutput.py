@@ -86,3 +86,24 @@ class PropertiesRuleOutput(RuleOutput):
                 if edit[0] in output.props:
                     output.props.remove(edit[0])
         return output
+
+class DecRuleOutput(RuleOutput):
+    def __init__(self):
+        pass
+    @staticmethod
+    def apply(ig,match_token):
+        output = ig.duplicate()
+        output.count = output.count.as_float()
+        return output
+
+DecRuleOutputInstance = DecRuleOutput()
+
+class FracRuleOutput(RuleOutput):
+    def __init__(self):
+        pass
+    def apply(ig,match_token):
+        output = ig.duplicate()
+        output.count = output.count.as_fraction(10)
+        return output
+    
+FracRuleOutputInstance = FracRuleOutput()

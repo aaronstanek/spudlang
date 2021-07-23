@@ -114,11 +114,11 @@ chickpea + dry is - dry + uncooked
 
 renaming, conversion, and prefixing all use "is" operator once
 
-renaming: A is B
+renaming: A is B (wildcard forbidden)
 conversion: # A is # B
 conversion: # A B is # C D
 conversion: # A B is # C
-prefixing: A is a B
+prefixing: A is a B (wildcard forbidden)
 
 + $ keeps all properties, where they would otherwise
 be discarded
