@@ -29,6 +29,9 @@ class NoneRuleOutput(RuleOutput):
     @staticmethod
     def apply(ig,match_token):
         return ig
+    @staticmethod
+    def priority():
+        return 1
 
 NoneRuleOutputInstance = NoneRuleOutput()
 
@@ -47,6 +50,9 @@ class RenamingRuleOutput(RuleOutput):
             #editing name
             output.name = output.name[:max(0,match_token[1])] + self.output_name
         return output
+    @staticmethod
+    def priority():
+        return 2
 
 class PrefixingRuleOutput(RuleOutput):
     def __init__(self,prefix):
@@ -67,6 +73,9 @@ class PrefixingRuleOutput(RuleOutput):
             # editing name
             output.name = self.prefix + output.name
         return output
+    @staticmethod
+    def priority():
+        return 3
 
 class InsertingRuleOutput(RuleOutput):
     def __init__(self,pattern_size,insertion):
@@ -87,6 +96,9 @@ class InsertingRuleOutput(RuleOutput):
             # editing name
             output.name = output.name[:max(0,match_token[1])] + self.insertion + output.name[max(0,match_token[1])+self.pattern_size:]
         return output
+    @staticmethod
+    def priority():
+        return 2
 
 class SingleConvertingRuleOutput(RenamingRuleOutput):
     def __init__(self,ratio,output_name):
@@ -99,6 +111,9 @@ class SingleConvertingRuleOutput(RenamingRuleOutput):
         output = super().apply(ig,match_token).duplicate()
         output.count = output.count * self.ratio
         return output
+    @staticmethod
+    def priority():
+        return 5
 
 class DoubleConvertingRuleOutput(RuleOutput):
     def __init__(self,ratio,output_unit,output_name):
@@ -125,6 +140,9 @@ class DoubleConvertingRuleOutput(RuleOutput):
             ig = ig.duplicate()
             ig.count = ig.count * self.ratio
         return ig
+    @staticmethod
+    def priority():
+        return 5
 
 class PropertiesRuleOutput(RuleOutput):
     def __init__(self,base,edits):
@@ -143,6 +161,8 @@ class PropertiesRuleOutput(RuleOutput):
                 if edit[0] in output.props:
                     output.props.remove(edit[0])
         return output
+    def priority(self):
+        return self.base.priority()
 
 class DecRuleOutput(RuleOutput):
     def __init__(self):
@@ -152,6 +172,9 @@ class DecRuleOutput(RuleOutput):
         output = ig.duplicate()
         output.count = output.count.as_float()
         return output
+    @staticmethod
+    def priority():
+        return 1
 
 DecRuleOutputInstance = DecRuleOutput()
 
@@ -163,5 +186,8 @@ class FracRuleOutput(RuleOutput):
         output = ig.duplicate()
         output.count = output.count.as_fraction(10)
         return output
+    @staticmethod
+    def priority():
+        return 1
     
 FracRuleOutputInstance = FracRuleOutput()

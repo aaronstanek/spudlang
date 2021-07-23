@@ -140,3 +140,11 @@ A (assumed to be 1 meals_worth)
 # A B
 
 @import path
+
+priorities
+0: hold
+1: do nothing, likely meaning property edits, dec, frac
+2: renaming, insertion
+3: prefixing
+4: hold units
+5: single and double conversions
