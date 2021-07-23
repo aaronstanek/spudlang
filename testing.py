@@ -259,6 +259,17 @@ class TestRuleOutput(unittest.TestCase):
         a = Ingredient(MyNumber((5,1)),["count"],["pepper","bell","red"],{"chopped"})
         b = NoneRuleOutput.apply(a,(None,None))
         self.assertTrue(b is a)
+    
+    def test_rename(self):
+        a = Ingredient(MyNumber((5,1)),["count"],["pepper","bell","red"],{"chopped"})
+        b = RenamingRuleOutput(["carrot"])
+        c = b.apply(a,(2,1))
+        self.assertEqual(c.name,["pepper","carrot"])
+        self.assertEqual(a.name,["pepper","bell","red"])
+        b = RenamingRuleOutput(["kg"])
+        c = b.apply(a,(1,0))
+        self.assertEqual(c.unit,["kg"])
+        self.assertEqual(a.unit,["count"])
 
 if __name__ == '__main__':
     unittest.main()

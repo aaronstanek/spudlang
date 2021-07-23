@@ -9,6 +9,7 @@ from FormatCheck import listOfStrings, setOfStrings, listOfTupleStringBools
 class RuleOutput(object):
     def __init__(self):
         raise Exception("creating an instance of RuleOutput base class is forbidden")
+    @staticmethod
     def check_conformity(ig,match_token,match_token_length):
         # check that an input to apply makes sense
         if type(ig) != Ingredient:
