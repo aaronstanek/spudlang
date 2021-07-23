@@ -275,5 +275,18 @@ class TestRuleOutput(unittest.TestCase):
         self.assertEqual(c.name,["pepper","black","ground"])
         self.assertEqual(a.name,["pepper","bell","red"])
 
+    def test_prefix(self):
+        a = Ingredient(MyNumber((5,1)),["count"],["pepper","bell","red"],{"chopped"})
+        b = PrefixingRuleOutput(["metric"])
+        c = b.apply(a,(2,1))
+        self.assertTrue(c is a)
+        c = b.apply(a,(1,0))
+        self.assertEqual(c.unit,["metric","count"])
+        self.assertEqual(a.unit,["count"])
+        b = PrefixingRuleOutput(["food","vegetable"])
+        c = b.apply(a,(2,0))
+        self.assertEqual(c.name,["food","vegetable","pepper","bell","red"])
+        self.assertEqual(a.name,["pepper","bell","red"])
+
 if __name__ == '__main__':
     unittest.main()
