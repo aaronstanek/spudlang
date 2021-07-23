@@ -3,7 +3,11 @@ import unittest
 from MyNumber import MyNumber
 from Ingredient import Ingredient
 from Pattern import Pattern, SinglePattern, DoublePattern
-from RuleOutput import NoneRuleOutputInstance, RenamingRuleOutput, PrefixingRuleOutput, PropertiesRuleOutput
+from RuleOutput import (
+    NoneRuleOutputInstance, RenamingRuleOutput,
+    PrefixingRuleOutput, PropertiesRuleOutput,
+    DecRuleOutputInstance, FracRuleOutputInstance
+    )
 
 class TestMyNumber(unittest.TestCase):
 
@@ -314,6 +318,24 @@ class TestRuleOutput(unittest.TestCase):
         self.assertEqual(c.name,["pepper","bell","red"])
         self.assertEqual(c.props,{"minced","slimey"})
         self.assertEqual(a.props,{"chopped"})
+    
+    def test_dec(self):
+        a = Ingredient(MyNumber((11,2)),["count"],["pepper","bell","red"],{"chopped"})
+        c = DecRuleOutputInstance.apply(a,(None,None))
+        self.assertEqual(str(c.count),"5.5")
+        self.assertEqual(c.unit,["count"])
+        self.assertEqual(c.name,["pepper","bell","red"])
+        self.assertEqual(c.props,{"chopped"})
+        self.assertEqual(str(a.count),"5 1/2")
+
+    def test_frac(self):
+        a = Ingredient(MyNumber(5.5),["count"],["pepper","bell","red"],{"chopped"})
+        c = FracRuleOutputInstance.apply(a,(None,None))
+        self.assertEqual(str(c.count),"5 1/2")
+        self.assertEqual(c.unit,["count"])
+        self.assertEqual(c.name,["pepper","bell","red"])
+        self.assertEqual(c.props,{"chopped"})
+        self.assertEqual(str(a.count),"5.5")
 
 if __name__ == '__main__':
     unittest.main()
