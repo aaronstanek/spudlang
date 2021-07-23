@@ -109,7 +109,7 @@ class MyNumber(object):
                 # it is the new upper bound
                 right = now
     def __add__(self,other):
-        if type(other) != MyNumber:
+        if not isinstance(other,MyNumber):
             raise TypeError("Expected other to be of type MyNumber")
         if self.is_fraction and other.is_fraction:
             # both are fractions
@@ -135,7 +135,7 @@ class MyNumber(object):
             n = self.as_float().value + other.as_float().value
             return MyNumber(n)
     def __mul__(self,other):
-        if type(other) != MyNumber:
+        if not isinstance(other,MyNumber):
             raise TypeError("Expected other to be of type MyNumber")
         if self.is_fraction and other.is_fraction:
             # both are fractions

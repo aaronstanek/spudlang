@@ -7,7 +7,7 @@ from copy import copy
 
 class Ingredient(object):
     def __init__(self,count,unit,name,props):
-        if type(count) != MyNumber:
+        if not isinstance(count,MyNumber):
             raise TypeError("count must be of type MyNumber")
         listOfStrings(unit)
         listOfStrings(name)

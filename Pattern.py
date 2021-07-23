@@ -61,7 +61,7 @@ class SinglePattern(Pattern):
         if rule is not None:
             self.specificity += len(rule)
     def matches(self,ig):
-        if type(ig) != Ingredient:
+        if not isinstance(ig,Ingredient):
             raise TypeError("Expected ig to be of type Ingredient")
         if len(self.props) == 0:
             res = self._compare(self.rule,ig.name)
@@ -102,7 +102,7 @@ class DoublePattern(Pattern):
         if rule_name is not None:
             self.specificity += len(rule_name)
     def matches(self,ig):
-        if type(ig) != Ingredient:
+        if not isinstance(ig,Ingredient):
             raise TypeError("Expected ig to be of type Ingredient")
         if self.rule_unit is None:
             res_unit = -1

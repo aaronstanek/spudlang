@@ -12,7 +12,7 @@ class RuleOutput(object):
     @staticmethod
     def check_conformity(ig,match_token,match_token_length):
         # check that an input to apply makes sense
-        if type(ig) != Ingredient:
+        if not isinstance(ig,Ingredient):
             raise TypeError("Expected ig to be an Ingredient")
         if type(match_token) != tuple:
             raise TypeError("Expected tuple")
@@ -103,7 +103,7 @@ class InsertingRuleOutput(RuleOutput):
 class SingleConvertingRuleOutput(RenamingRuleOutput):
     def __init__(self,ratio,output_name):
         super().__init__(output_name)
-        if type(ratio) != MyNumber:
+        if not isinstance(ratio,MyNumber):
             raise TypeError("Expected MyNumber")
         self.ratio = ratio
     def apply(self,ig,match_token):
@@ -120,7 +120,7 @@ class DoubleConvertingRuleOutput(RuleOutput):
         # ratio, output_unit, and output_name
         # may each be None to indicate a wildcard
         if ratio is not None:
-            if type(ratio) != MyNumber:
+            if not isinstance(ratio,MyNumber):
                 raise TypeError("Expected MyNumber")
         if output_unit is not None:
             output_unit = RenamingRuleOutput(output_unit)
