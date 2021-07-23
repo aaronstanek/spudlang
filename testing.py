@@ -3,7 +3,7 @@ import unittest
 from MyNumber import MyNumber
 from Ingredient import Ingredient
 from Pattern import Pattern, SinglePattern, DoublePattern
-from RuleOutput import NoneRuleOutput, RenamingRuleOutput, PrefixingRuleOutput, PropertiesRuleOutput
+from RuleOutput import NoneRuleOutputInstance, RenamingRuleOutput, PrefixingRuleOutput, PropertiesRuleOutput
 
 class TestMyNumber(unittest.TestCase):
 
@@ -257,7 +257,7 @@ class TestRuleOutput(unittest.TestCase):
 
     def test_none(self):
         a = Ingredient(MyNumber((5,1)),["count"],["pepper","bell","red"],{"chopped"})
-        b = NoneRuleOutput.apply(a,(None,None))
+        b = NoneRuleOutputInstance.apply(a,(None,None))
         self.assertTrue(b is a)
     
     def test_rename(self):
@@ -302,6 +302,18 @@ class TestRuleOutput(unittest.TestCase):
         self.assertEqual(a.name,["pepper","bell","red"])
         self.assertEqual(c.unit,["count"])
         self.assertEqual(c.props,{"chopped"})
+
+    def test_prop(self):
+        a = Ingredient(MyNumber((5,1)),["count"],["pepper","bell","red"],{"chopped"})
+        b = PropertiesRuleOutput(NoneRuleOutputInstance,[
+            ("minced",True),("chopped",False),("cheesey",False),("slimey",True)
+        ])
+        c = b.apply(a,(None,None))
+        self.assertEqual(str(c.count),"5")
+        self.assertEqual(c.unit,["count"])
+        self.assertEqual(c.name,["pepper","bell","red"])
+        self.assertEqual(c.props,{"minced","slimey"})
+        self.assertEqual(a.props,{"chopped"})
 
 if __name__ == '__main__':
     unittest.main()

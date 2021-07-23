@@ -24,9 +24,13 @@ class RuleOutput(object):
             raise TypeError("Expected tuple filled with ints")
 
 class NoneRuleOutput(RuleOutput):
+    def __init__(self):
+        pass
     @staticmethod
     def apply(ig,match_token):
         return ig
+
+NoneRuleOutputInstance = NoneRuleOutput()
 
 class RenamingRuleOutput(RuleOutput):
     def __init__(self,output_name):
