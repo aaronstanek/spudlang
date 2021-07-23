@@ -395,6 +395,26 @@ class TestRuleOutput(unittest.TestCase):
         self.assertEqual(c.name,["pepper","bell","red"])
         self.assertEqual(c.props,{"chopped"})
         self.assertEqual(str(a.count),"5.5")
+    
+    def test_priority(self):
+        a = NoneRuleOutputInstance
+        b = DecRuleOutputInstance
+        c = FracRuleOutputInstance
+        self.assertEqual(a.priority(),b.priority())
+        self.assertEqual(a.priority(),c.priority())
+        b = RenamingRuleOutput(["hi"])
+        c = InsertingRuleOutput(1,["hi"])
+        self.assertLess(a.priority(),b.priority())
+        self.assertLess(a.priority(),c.priority())
+        self.assertEqual(b.priority(),c.priority())
+        a = PrefixingRuleOutput(["hi"])
+        self.assertLess(b.priority(),a.priority())
+        self.assertLess(c.priority(),a.priority())
+        b = SingleConvertingRuleOutput(MyNumber(1.0),["hi"])
+        c = DoubleConvertingRuleOutput(MyNumber(1.0),["hi"],["hi"])
+        self.assertLess(a.priority(),b.priority())
+        self.assertLess(a.priority(),c.priority())
+        self.assertEqual(b.priority(),c.priority())
 
 if __name__ == '__main__':
     unittest.main()
