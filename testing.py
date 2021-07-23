@@ -5,7 +5,8 @@ from Ingredient import Ingredient
 from Pattern import Pattern, SinglePattern, DoublePattern
 from RuleOutput import (
     NoneRuleOutputInstance, RenamingRuleOutput,
-    PrefixingRuleOutput, PropertiesRuleOutput,
+    PrefixingRuleOutput, SingleConvertingRuleOutput,
+    PropertiesRuleOutput,
     DecRuleOutputInstance, FracRuleOutputInstance
     )
 
@@ -306,6 +307,17 @@ class TestRuleOutput(unittest.TestCase):
         self.assertEqual(a.name,["pepper","bell","red"])
         self.assertEqual(c.unit,["count"])
         self.assertEqual(c.props,{"chopped"})
+
+    def test_single_convert(self):
+        a = Ingredient(MyNumber((5,1)),["count"],["pepper","bell","red"],{"chopped"})
+        b = SingleConvertingRuleOutput(MyNumber((5,2)),["black"])
+        c = b.apply(a,(2,1))
+        self.assertEqual(str(c.count),"12 1/2")
+        self.assertEqual(c.unit,["count"])
+        self.assertEqual(c.name,["pepper","black"])
+        self.assertEqual(c.props,{"chopped"})
+        self.assertEqual(str(a.count),"5")
+        self.assertEqual(a.name,["pepper","bell","red"])
 
     def test_prop(self):
         a = Ingredient(MyNumber((5,1)),["count"],["pepper","bell","red"],{"chopped"})
