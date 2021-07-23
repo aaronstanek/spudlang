@@ -6,7 +6,7 @@ from Pattern import Pattern, SinglePattern, DoublePattern
 from RuleOutput import (
     NoneRuleOutputInstance, RenamingRuleOutput,
     PrefixingRuleOutput, SingleConvertingRuleOutput,
-    PropertiesRuleOutput,
+    DoubleConvertingRuleOutput, PropertiesRuleOutput,
     DecRuleOutputInstance, FracRuleOutputInstance
     )
 
@@ -318,6 +318,21 @@ class TestRuleOutput(unittest.TestCase):
         self.assertEqual(c.props,{"chopped"})
         self.assertEqual(str(a.count),"5")
         self.assertEqual(a.name,["pepper","bell","red"])
+
+    def test_double_convert(self):
+        a = Ingredient(MyNumber((5,1)),["count"],["pepper","bell","red"],{"chopped"})
+        b = DoubleConvertingRuleOutput(MyNumber((4,5)),["cup"],None)
+        c = b.apply(a,(1,0,-1))
+        self.assertEqual(str(c.count),"4")
+        self.assertEqual(c.unit,["cup"])
+        self.assertEqual(c.name,["pepper","bell","red"])
+        self.assertEqual(c.props,{"chopped"})
+        b = DoubleConvertingRuleOutput(None,["pound"],["green"])
+        c = b.apply(a,(1,-1,2))
+        self.assertEqual(str(c.count),"5")
+        self.assertEqual(c.unit,["pound"])
+        self.assertEqual(c.name,["pepper","bell","green"])
+        self.assertEqual(c.props,{"chopped"})
 
     def test_prop(self):
         a = Ingredient(MyNumber((5,1)),["count"],["pepper","bell","red"],{"chopped"})
