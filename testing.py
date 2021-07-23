@@ -415,6 +415,11 @@ class TestRuleOutput(unittest.TestCase):
         self.assertLess(a.priority(),b.priority())
         self.assertLess(a.priority(),c.priority())
         self.assertEqual(b.priority(),c.priority())
+        a = NoneRuleOutputInstance
+        b = PropertiesRuleOutput(NoneRuleOutputInstance,[("yes",True)])
+        c = PropertiesRuleOutput(c,[("hi",True)])
+        self.assertEqual(a.priority(),b.priority())
+        self.assertLess(b.priority(),c.priority())
 
 if __name__ == '__main__':
     unittest.main()
