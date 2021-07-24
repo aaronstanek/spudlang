@@ -94,6 +94,6 @@ class RuleBox(object):
             if len(results) == 1:
                 ig = results[0]
             else:
-                for i in range(len(results)):
-                    self.resolve(output_array,results[i],mask=copy(mask))
+                for result in results:
+                    self.resolve(output_array,result,mask=copy(mask))
                     return
