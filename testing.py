@@ -447,6 +447,10 @@ class TestRule(unittest.TestCase):
         self.assertEqual(results[1].unit,["count"])
         self.assertEqual(results[1].name,["pepper","crunch","turnip","red"])
         self.assertEqual(results[1].props,{"watered"})
+        self.assertEqual(type(d.priority()),int)
+        self.assertTrue(d.priority()>=0)
+        self.assertEqual(type(d.specificity()),int)
+        self.assertTrue(d.specificity()>=0)
 
 if __name__ == '__main__':
     unittest.main()
