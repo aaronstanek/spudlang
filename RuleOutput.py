@@ -61,7 +61,7 @@ class PrefixingRuleOutput(RuleOutput):
     def apply(self,ig,match_token):
         # match token must come from SinglePattern
         self.check_conformity(ig,match_token,2)
-        if match_token[1] != 0:
+        if match_token[1] > 0:
             # if the input already has a prefix,
             # we shouldn't change it
             return ig
