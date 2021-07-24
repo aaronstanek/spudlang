@@ -10,7 +10,7 @@ from RuleOutput import (
     PropertiesRuleOutput,
     DecRuleOutputInstance, FracRuleOutputInstance
     )
-from Rule import Rule, HoldRule
+from Rule import Rule, HoldRule, RuleBox
 
 class TestMyNumber(unittest.TestCase):
 
@@ -457,6 +457,25 @@ class TestRule(unittest.TestCase):
         b = HoldRule(a,99)
         self.assertTrue(isinstance(b,Rule))
         self.assertEqual(b.priority(),99)
+
+    def test_rule_box(self):
+        # we will do a simple example to make sure that
+        # something at least works
+        A = Ingredient(MyNumber((5,1)),["count"],["pepper","bell","red"],{"chopped"})
+        box = RuleBox()
+        # $+chopped-fresh is $+fresh
+        box.add(Rule(
+            SinglePattern(None,{"chopped":True,"fresh":False}),
+            [PropertiesRuleOutput(NoneRuleOutputInstance,[("fresh",True)])]
+            ))
+        output_array = []
+        box.resolve(output_array,A)
+        self.assertEqual(len(output_array),1)
+        self.assertEqual(type(output_array[0]),Ingredient)
+        self.assertEqual(str(output_array[0].count),"5")
+        self.assertEqual(output_array[0].unit,["count"])
+        self.assertEqual(output_array[0].name,["pepper","bell","red"])
+        self.assertEqual(output_array[0].props,{"chopped","fresh"})
 
 if __name__ == '__main__':
     unittest.main()

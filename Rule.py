@@ -83,11 +83,9 @@ class RuleBox(object):
             raise TypeError("Expected Ingredient")
         while True:
             rule, index, match_token = self._search(ig,mask)
-            if rule is None:
+            if (rule is None) or isinstance(rule,HoldRule):
                 # we are done
-                return
-            elif isinstance(rule,HoldRule):
-                # we are done
+                output_array.append(ig)
                 return
             results = rule.apply(ig,match_token)
             mask.add(index)
