@@ -10,6 +10,7 @@ from RuleOutput import (
     PropertiesRuleOutput,
     DecRuleOutputInstance, FracRuleOutputInstance
     )
+from Rule import Rule
 
 class TestMyNumber(unittest.TestCase):
 
@@ -420,6 +421,32 @@ class TestRuleOutput(unittest.TestCase):
         c = PropertiesRuleOutput(c,[("hi",True)])
         self.assertEqual(a.priority(),b.priority())
         self.assertLess(b.priority(),c.priority())
+
+class TestRule(unittest.TestCase):
+
+    def test_rule(self):
+        # the Rule class is transparent enough
+        # that it should trivially work
+        # but we should test an example anyway
+        a = SinglePattern(["bell"],{"chopped":True})
+        b = RenamingRuleOutput(["spicy"])
+        c = PropertiesRuleOutput(InsertingRuleOutput(1,["crunch","turnip"]),[("chopped",False),("watered",True)])
+        d = Rule(a,[b,c])
+        ig = Ingredient(MyNumber((5,1)),["count"],["pepper","bell","red"],{"chopped"})
+        match_token = d.matches(ig)
+        self.assertEqual(type(match_token),tuple)
+        self.assertEqual(match_token,(2,1))
+        results = d.apply(ig,match_token)
+        self.assertEqual(type(results),list)
+        self.assertEqual(len(results),2)
+        self.assertEqual(str(results[0].count),"5")
+        self.assertEqual(results[0].unit,["count"])
+        self.assertEqual(results[0].name,["pepper","spicy"])
+        self.assertEqual(results[0].props,{"chopped"})
+        self.assertEqual(str(results[1].count),"5")
+        self.assertEqual(results[1].unit,["count"])
+        self.assertEqual(results[1].name,["pepper","crunch","turnip","red"])
+        self.assertEqual(results[1].props,{"watered"})
 
 if __name__ == '__main__':
     unittest.main()

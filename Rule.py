@@ -27,4 +27,4 @@ class Rule(object):
         return list(map(lambda x: x.apply(ig,match_token),self.outputs))
     def priority(self):
         # self.outputs has nonzero length
-        return self.outputs.priority()
+        return self.outputs[0].priority()
