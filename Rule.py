@@ -1,7 +1,10 @@
 # defines the Rule class
 # a container for Patterns and RuleOutputs
+# defines the HoldRule class
+# to allow for a Rule which does nothing
+# except to signal the end of evaluation
 
-from RuleOutput import RuleOutput
+from RuleOutput import RuleOutput, NoneRuleOutputInstance
 from Pattern import Pattern
 
 class Rule(object):
@@ -28,3 +31,12 @@ class Rule(object):
     def priority(self):
         # self.outputs has nonzero length
         return self.outputs[0].priority()
+
+class HoldRule(Rule):
+    def __init__(self,pattern,priority):
+        super().__init__(pattern,[NoneRuleOutputInstance])
+        if type(priority) != int:
+            raise TypeError("Expected int")
+        self._priority = priority
+    def priority(self):
+        return self._priority
