@@ -10,7 +10,7 @@ from RuleOutput import (
     PropertiesRuleOutput,
     DecRuleOutputInstance, FracRuleOutputInstance
     )
-from Rule import Rule
+from Rule import Rule, HoldRule
 
 class TestMyNumber(unittest.TestCase):
 
@@ -451,6 +451,12 @@ class TestRule(unittest.TestCase):
         self.assertTrue(d.priority()>=0)
         self.assertEqual(type(d.specificity()),int)
         self.assertTrue(d.specificity()>=0)
+    
+    def test_hold_rule(self):
+        a = SinglePattern(["bell"],{"chopped":True})
+        b = HoldRule(a,99)
+        self.assertTrue(isinstance(b,Rule))
+        self.assertEqual(b.priority(),99)
 
 if __name__ == '__main__':
     unittest.main()
