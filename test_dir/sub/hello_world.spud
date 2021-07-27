@@ -1,0 +1,5 @@
+# line
+/ other line
+
+@import ../a.spud
+@import ../b.spud

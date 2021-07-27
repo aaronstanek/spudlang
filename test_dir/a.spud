@@ -1,1 +1,5 @@
 1 carrot
+
+# ignore this line
+@import sub/hello_world
+/ ignore this line
