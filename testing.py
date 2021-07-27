@@ -476,6 +476,62 @@ class TestRule(unittest.TestCase):
         self.assertEqual(output_array[0].unit,["count"])
         self.assertEqual(output_array[0].name,["pepper","bell","red"])
         self.assertEqual(output_array[0].props,{"chopped","fresh"})
+    
+    def test_rule_box2(self):
+        # more advanced test to make sure that rules
+        # are applied in order
+        A = Ingredient(MyNumber((5,1)),["count"],["pepper","bell","red"],{"chopped"})
+        box = RuleBox()
+        # $+pepper.bell is pepper.black+fresh+ground
+        # run second
+        box.add(Rule(
+            SinglePattern(["pepper","bell"],{}),
+            [
+                PropertiesRuleOutput(
+                    RenamingRuleOutput(["pepper","black"]),
+                    [("fresh",True),("ground",True)]
+                    )
+            ]
+        ))
+        # $+chopped-fresh is $+fresh
+        # run first
+        box.add(Rule(
+            SinglePattern(None,{"chopped":True,"fresh":False}),
+            [PropertiesRuleOutput(NoneRuleOutputInstance,[("fresh",True)])]
+            ))
+        # 1 kg $ is 1000 g $
+        # not run
+        box.add(Rule(
+            SinglePattern(["kg"],{}),
+            [SingleConvertingRuleOutput(MyNumber((1000,1)),["g"])]
+        ))
+        # 1 count pepper is $ cup $
+        # run third
+        box.add(Rule(
+            DoublePattern(["count"],["pepper"],{}),
+            [DoubleConvertingRuleOutput(None,["cup"],None)]
+        ))
+        # cup is an imperial
+        # does not get run
+        box.add(Rule(
+            SinglePattern(["cup"],{}),
+            [PrefixingRuleOutput(["imperial"])]
+        ))
+        # hold after reaching cup pepper+ground
+        box.add(HoldRule(
+            DoublePattern(["cup"],["pepper"],{"ground":True}),
+            0
+        ))
+        # do it
+        output_array = []
+        box.resolve(output_array,A,set())
+        self.assertEqual(len(output_array),1)
+        r = output_array[0]
+        self.assertEqual(type(r),Ingredient)
+        self.assertEqual(str(r.count),"5")
+        self.assertEqual(r.unit,["cup"])
+        self.assertEqual(r.name,["pepper","black"])
+        self.assertEqual(r.props,{"chopped","fresh","ground"})
 
 if __name__ == '__main__':
     unittest.main()
