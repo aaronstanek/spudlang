@@ -9,6 +9,7 @@
 from Ingredient import Ingredient
 from RuleOutput import RuleOutput, NoneRuleOutputInstance
 from Pattern import Pattern
+from ResultsTree import ResultsTree
 
 from copy import copy
 
@@ -95,3 +96,15 @@ class RuleBox(object):
                 for result in results:
                     self.resolve(output_array,result,mask=copy(mask))
                     return
+    def resolve_to_html_document(self,ig_array):
+        if type(ig_array) != list:
+            raise TypeError("Expected list")
+        if not all(lambda x: type(x) == Ingredient, ig_array):
+            raise TypeError("Expected list of Ingredient objects")
+        tree = ResultsTree()
+        for ig in ig_array:
+            output_array = []
+            self.resolve(output_array,ig)
+            for output_ig in output_array:
+                tree.add_ingredient(output_ig)
+        return tree.as_html_document()
