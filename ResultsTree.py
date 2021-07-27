@@ -2,7 +2,6 @@
 # used for storing the output of the program
 # and for saving the results as an html document
 
-from _typeshed import OpenTextModeUpdating
 from Ingredient import Ingredient
 
 class ResultsTree(object):
