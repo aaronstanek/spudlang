@@ -36,7 +36,7 @@ def is_comment(s):
     words = s.split(" ")
     for word in words:
         if len(word) != 0:
-            return word[0] == "#" or word[0] == "/":
+            return word[0] == "#" or word[0] == "/"
     # if we end up here
     # then the input was an empty string
     raise Exception("bad program state")
