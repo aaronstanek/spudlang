@@ -55,6 +55,8 @@ def main():
         initial_path = sys.argv[1]
     else:
         initial_path = os.path.join(os.getcwd(),sys.argv[1])
+    lines = recursive_load(initial_path)
+    print(lines)
 
 if __name__ == "__main__":
     main()
