@@ -33,7 +33,11 @@ class ResultsTree(object):
             self.terms.append(ig)
         else:
             # we will put it in the subtrees
-            if ig.name[0] in self.subtrees:
+            if ig.name[0][0] == "_":
+                # we need to ignore this level
+                # of processing
+                st = self
+            elif ig.name[0] in self.subtrees:
                 # we can hand it off to the subtree for processing
                 st = self.subtrees[ig.name[0]]
             else:
