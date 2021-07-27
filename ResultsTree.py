@@ -66,8 +66,9 @@ class ResultsTree(object):
             props = list(term.props)
             props.sort()
             for prop in props:
-                output.append(" ")
-                output.append(prop)
+                if prop[0] != "_":
+                    output.append(" ")
+                    output.append(prop)
             output.append("</li>")
         subtree_names = list(self.subtrees)
         subtree_names.sort()
