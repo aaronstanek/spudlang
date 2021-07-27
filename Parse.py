@@ -17,6 +17,8 @@ def make_lines(raw):
         if value == 10:
             lines.append(bytes(line).decode("utf-8"))
             line = []
+        else:
+            line.append(value)
     lines.append(bytes(line).decode("utf-8"))
     return lines
 

@@ -41,7 +41,7 @@ def recursive_load(path,seen=set()):
     output = []
     for import_path in imports:
         if not os.path.isabs(import_path):
-            import_path = os.join(os.path.dirname(),import_path)
+            import_path = os.path.join(os.path.dirname(path),import_path)
             import_path = os.path.abspath(import_path)
         output += recursive_load(import_path,seen)
     raw_data = list(filter(lambda x: not Parse.is_import(x), raw_data))
