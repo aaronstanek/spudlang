@@ -80,3 +80,47 @@ def interpret_import(s):
         else:
             break
     return path
+
+canonical_letters = {
+    # some characters are padded
+    "$": " $ ",
+    "&": " & ",
+    "+": " + ",
+    "-": " - ",
+    # some characters are not
+    " ": " ",
+    "@": "@",
+    ".": ".",
+    "_": "_"
+}
+
+def grow_canonical():
+    global canonical_letters
+    for i in range(48,58):
+        # numerals
+        c = chr(i)
+        canonical_letters[c] = c
+    for i in range(65,91):
+        # capitals
+        c = chr(i)
+        canonical_letters[c] = c
+        # lowercase
+        c = chr(i+32)
+        canonical_letters[c] = c
+
+grow_canonical()
+
+def validate_and_expand(s):
+    # s is a string, a line of code
+    # nonempty, not a comment, not an import
+    # we will replace all valid characters
+    # with their canonical representations
+    # we will throw an Exception on invalid characters
+    global canonical_letters
+    output = []
+    for c in s:
+        if c in canonical_letters:
+            output.append(canonical_letters[c])
+        else:
+            raise Exception("Invalid character charcode:"+str(ord(c))+" letter:"+c)
+    return "".join(output)

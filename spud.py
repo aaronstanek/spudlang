@@ -56,6 +56,10 @@ def main():
     else:
         initial_path = os.path.join(os.getcwd(),sys.argv[1])
     lines = recursive_load(initial_path)
+    # lines are the all the lines of the input
+    # in order, as strings
+    # no comments, imports or empty lines
+    lines = list(map(lambda x: Parse.validate_and_expand(x), lines))
     print(lines)
 
 if __name__ == "__main__":
