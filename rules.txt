@@ -148,3 +148,6 @@ priorities
 3: prefixing
 4: hold units
 5: single and double conversions
+
+@begin multiply #
+@end
