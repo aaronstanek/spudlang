@@ -55,6 +55,10 @@ class ResultsTree(object):
         for term in self.terms:
             output.append("<li>")
             output.append(str(term.count))
+            for unit in term.unit:
+                if unit[0] != "_":
+                    output.append(" ")
+                    output.append(unit)
             props = list(term.props)
             props.sort()
             for prop in props:
