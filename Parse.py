@@ -42,7 +42,7 @@ def is_comment(s):
     raise Exception("bad program state")
 
 def is_import(s):
-    # s is a onempty string
+    # s is a nonempty string
     # returns True if s is an import statement
     # returns False otherwise
     words = s.split(" ")
@@ -52,3 +52,29 @@ def is_import(s):
     # if we end up here
     # then the input was an empty string
     raise Exception("bad program state")
+
+def interpret_import(s):
+    # s is an import statement
+    # @import is the first nonempty bit
+    import_index = s.find("@import")
+    path_index = import_index + 7
+    path = s[path_index:]
+    # safe to remove initial and traling spaces
+    # but not spaces in the middle
+    while True:
+        if len(path) == 0:
+            break
+        if path[0] == " ":
+            path = path[1:]
+            continue
+        else:
+            break
+    while True:
+        if len(path) == 0:
+            break
+        if path[-1] == " ":
+            path = path[:-1]
+            continue
+        else:
+            break
+    return path
