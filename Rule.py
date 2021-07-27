@@ -99,7 +99,7 @@ class RuleBox(object):
     def resolve_to_html_document(self,ig_array):
         if type(ig_array) != list:
             raise TypeError("Expected list")
-        if not all(lambda x: type(x) == Ingredient, ig_array):
+        if not all(map(lambda x: type(x) == Ingredient, ig_array)):
             raise TypeError("Expected list of Ingredient objects")
         tree = ResultsTree()
         for ig in ig_array:
