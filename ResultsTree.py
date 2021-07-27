@@ -25,7 +25,8 @@ class ResultsTree(object):
                     self.terms[i] = Ingredient(
                         term.count + ig.count,
                         term.unit,
-                        term.name
+                        term.name,
+                        term.props
                     )
                     return
             # no match in the terms
