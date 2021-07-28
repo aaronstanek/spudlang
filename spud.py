@@ -61,6 +61,9 @@ def main():
     # no comments, imports or empty lines
     lines = list(map(lambda x: Parse.validate_and_expand(x), lines))
     lines = list(map(lambda x: Parse.make_words(x), lines))
+    # lines is now a list of lists of strings
+    # none of the strings are empty
+    # but some of the lists may be
     print(lines)
 
 if __name__ == "__main__":
