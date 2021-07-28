@@ -60,6 +60,7 @@ def main():
     # in order, as strings
     # no comments, imports or empty lines
     lines = list(map(lambda x: Parse.validate_and_expand(x), lines))
+    lines = list(map(lambda x: Parse.make_words(x), lines))
     print(lines)
 
 if __name__ == "__main__":

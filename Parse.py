@@ -124,3 +124,14 @@ def validate_and_expand(s):
         else:
             raise Exception("Invalid character charcode:"+str(ord(c))+" letter:"+c)
     return "".join(output)
+
+def make_words(s):
+    # s is a string
+    # a line of code
+    # it is nonempty
+    # we will return a list of nonempty strings
+    # containing the words in the line of code
+    # of does not have any meaning
+    # and will be excluded at this stage
+    words = s.split(" ")
+    return list(filter(lambda x: len(x) != 0 and x != "of", words))
