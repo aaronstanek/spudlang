@@ -149,3 +149,21 @@ def lex_verb(line,index):
         if index >= len(line):
             raise Exception("Syntax Error: line ended unexpectedly")
     return index, verb
+
+def lex_standard(line):
+    # expect noun_seq (verb noun_seq)
+    index = 0
+    index, left = lex_noun_sequence(line,index)
+    # if there is no noun, then this is not a standard line
+    if len(left) == 0:
+        return None
+    index, verb = lex_verb(line,index)
+    if verb is None:
+        # this better be the end of the line
+        if index < len(line):
+            return None
+        else:
+            return {
+                "type": "standard",
+                "left": left
+            }
