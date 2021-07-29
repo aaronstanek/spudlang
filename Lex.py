@@ -32,6 +32,9 @@ def lex_noun(line,index):
     if line[index].find("@") != -1:
         raise Exception("Syntax Error: @ may not be present in a noun")
     noun_core = line[index].split(".")
+    if any(map(lambda x: len(x)),noun_core):
+        # this is a syntax error
+        raise Exception("Syntax Error: noun contains empty segment")
     if any(map(lambda x: x in end_of_noun),noun_core):
         # this is a syntax error
         raise Exception("Syntax Error: noun contains keyword")
