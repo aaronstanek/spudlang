@@ -3,7 +3,7 @@
 import sys
 import os
 import hashlib
-import Parse
+import PreLex
 
 def load_file_raw(path):
     if path[-5:] != ".spud":
@@ -29,22 +29,22 @@ def recursive_load(path,seen=set()):
     else:
         # hex_hash has not been seen yet
         seen.add(hex_hash)
-    raw_data = Parse.convert_equivalent_codes(raw_data)
-    raw_data = Parse.make_lines(raw_data)
-    raw_data = list(filter(lambda x: not Parse.is_empty(x), raw_data))
-    raw_data = list(filter(lambda x: not Parse.is_comment(x), raw_data))
+    raw_data = PreLex.convert_equivalent_codes(raw_data)
+    raw_data = PreLex.make_lines(raw_data)
+    raw_data = list(filter(lambda x: not PreLex.is_empty(x), raw_data))
+    raw_data = list(filter(lambda x: not PreLex.is_comment(x), raw_data))
     # raw_data is now a list of strings
     # there are no empty lines
     # and no comments
-    imports = list(filter(lambda x: Parse.is_import(x), raw_data))
-    imports = list(map(lambda x: Parse.interpret_import(x), imports))
+    imports = list(filter(lambda x: PreLex.is_import(x), raw_data))
+    imports = list(map(lambda x: PreLex.interpret_import(x), imports))
     output = []
     for import_path in imports:
         if not os.path.isabs(import_path):
             import_path = os.path.join(os.path.dirname(path),import_path)
             import_path = os.path.abspath(import_path)
         output += recursive_load(import_path,seen)
-    raw_data = list(filter(lambda x: not Parse.is_import(x), raw_data))
+    raw_data = list(filter(lambda x: not PreLex.is_import(x), raw_data))
     output += raw_data
     return output
 
@@ -59,8 +59,8 @@ def main():
     # lines are the all the lines of the input
     # in order, as strings
     # no comments, imports or empty lines
-    lines = list(map(lambda x: Parse.validate_and_expand(x), lines))
-    lines = list(map(lambda x: Parse.make_words(x), lines))
+    lines = list(map(lambda x: PreLex.validate_and_expand(x), lines))
+    lines = list(map(lambda x: PreLex.make_words(x), lines))
     # lines is now a list of lists of strings
     # none of the strings are empty
     # but some of the lists may be
