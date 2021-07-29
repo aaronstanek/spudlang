@@ -71,3 +71,36 @@ def lex_noun(line,index):
         # this is a correctly formed prop
         props.append(line[index])
         index += 1
+
+def lex_noun_sequence(line,index):
+    # line is a list of strings (words)
+    # index is an int
+    # lexes line, starting at index
+    # returns the first index after the noun
+    # and the interpretation of the noun
+    # returns same index and None if a noun cannot be found at that point
+    nouns = []
+    while True:
+        index, noun = lex_noun(line,index)
+        if noun is None:
+            # if this is the first noun
+            # then that's ok
+            # but if this is a later noun
+            # then we expected there to be a noun here
+            if len(nouns) == 0:
+                return index, nouns
+            else:
+                raise Exception("Syntax Error: expected noun after &")
+        else:
+            nouns.append(noun)
+        if index >= len(line):
+            # nothing more to lex
+            return index, nouns
+        elif line[index] != "&":
+            # reached the end of the noun sequence
+            return index, nouns
+        else:
+            # we are still in the noun sequence
+            index += 1
+            # we should be at the first index
+            # of the next noun
