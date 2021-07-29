@@ -137,39 +137,3 @@ def make_words(s):
     # and will be excluded at this stage
     words = s.split(" ")
     return list(filter(lambda x: len(x) != 0 and x != "of", words))
-
-synonym_key_words = {"synonym","synonyms"}
-synonym_error_words = {"$","&"}
-synonym_ignore_words = {"is","are","a","an"}
-
-def parse_synonym_rule(s):
-    # s is a list of nonempty strings
-    # if s is a synonym rule
-    # then the rule is returned
-    # returns None otherwise
-    global synonym_key_words
-    synonyms = len(filter(lambda x: x in synonym_key_words, s))
-    if synonyms == 0:
-        return None
-    if synonyms > 1:
-        raise Exception("Syntax Error: Multiple instances of synonym in one line")
-    # it must be a synonym statement
-    # or an invalid statement
-    global synonym_error_words
-    if any(map(lambda x: x in synonym_error_words, s)):
-        raise Exception("Synonym statements may not contain $ or &")
-    global synonym_ignore_words
-    s = list(map(lambda x: x not in synonym_ignore_words, s))
-    for i in range(len(s)):
-        if s[i] in synonym_key_words:
-            break_index = i
-            break
-    # the loop above will yield a break_index
-    # because we know that exactly one of the elements
-    # of s is in synonym_key_words
-    left = s[:break_index]
-    right = s[break_index+1:]
-    # left and right may only contain
-    # ended here
-    # need a way to group parts of a number together
-    # need to group noun + adjective together
