@@ -134,4 +134,4 @@ def make_words(s):
     # of does not have any meaning
     # and will be excluded at this stage
     words = s.split(" ")
-    return list(filter(lambda x: len(x) != 0 and x != "of", words))
+    return list(filter(lambda x: len(x) != 0, words))
