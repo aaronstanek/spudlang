@@ -1,7 +1,5 @@
 # defines functions for parsing input code
 
-from MyNumber import MyNumber
-
 def convert_equivalent_codes(raw):
     # raw is an array of byte values
     # we convert 13 -> 10
