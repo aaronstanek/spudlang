@@ -76,8 +76,8 @@ def lex_noun_sequence(line,index):
     # line is a list of strings (words)
     # index is an int
     # lexes line, starting at index
-    # returns the first index after the noun
-    # and the interpretation of the noun
+    # returns the first index after the noun sequence
+    # and an array of the nouns (can be empty)
     # returns same index and None if a noun cannot be found at that point
     nouns = []
     while True:
@@ -104,3 +104,48 @@ def lex_noun_sequence(line,index):
             index += 1
             # we should be at the first index
             # of the next noun
+
+def lex_verb(line,index):
+    # lexes a verb starting at index in line
+    # index is an int
+    # line is list of string (words)
+    # returns the index after the verb
+    verb = []
+    if index >= len(line):
+        # nothing to lex
+        return index, None
+    if line[index] == "is" or line[index] == "are":
+        verb.append("is")
+        index += 1
+    else:
+        # not a verb
+        return index, None
+    if index >= len(line):
+        raise Exception("Syntax Error: line ended unexpectedly")
+    expect_modifier = False
+    if line[index] == "a" or line[index] == "an":
+        expect_modifier = True
+        index += 1
+        if index >= len(line):
+            raise Exception("Syntax Error: line ended unexpectedly")
+    if index[line] == "type" or index[line] == "types":
+        verb.append("type")
+        index += 1
+    elif index[line] == "synonym" or index[line] == "synonyms":
+        verb.append("synonym")
+        index += 1
+    elif expect_modifier:
+        # we expected a modifier, but there wasn't one
+        raise Exception("Syntax Error: expected modifier after a/an")
+    else:
+        # we didn't expect a modifier
+        # and we didn't get one
+        # the verb has ended
+        return index, verb
+    if index >= len(line):
+        raise Exception("Syntax Error: line ended unexpectedly")
+    if line[index] == "of":
+        index += 1
+        if index >= len(line):
+            raise Exception("Syntax Error: line ended unexpectedly")
+    return index, verb
