@@ -36,8 +36,8 @@ def recursive_load(path,seen=set()):
     # raw_data is now a list of strings
     # there are no empty lines
     # and no comments
-    imports = list(filter(lambda x: PreLex.is_import(x), raw_data))
-    imports = list(map(lambda x: PreLex.interpret_import(x), imports))
+    imports = list(filter(PreLex.is_import, raw_data))
+    imports = list(map(PreLex.interpret_import, imports))
     output = []
     for import_path in imports:
         if not os.path.isabs(import_path):
@@ -59,8 +59,8 @@ def main():
     # lines are the all the lines of the input
     # in order, as strings
     # no comments, imports or empty lines
-    lines = list(map(lambda x: PreLex.validate_and_expand(x), lines))
-    lines = list(map(lambda x: PreLex.make_words(x), lines))
+    lines = list(map(PreLex.validate_and_expand, lines))
+    lines = list(map(PreLex.make_words, lines))
     # lines is now a list of lists of strings
     # none of the strings are empty
     # but some of the lists may be
