@@ -260,9 +260,23 @@ def lex_standard(line):
     if verb is None:
         # this better be the end of the line
         if index < len(line):
-            return None
+            raise Exception("Syntax Error: verb expected after noun")
         else:
             return {
-                "type": "standard",
+                "type": "ingredient",
                 "left": left
             }
+    # we have a valid noun and a valid verb
+    # and we expect that there's stuff after the verb
+    index, right = lex_noun_sequence(line, index)
+    if right is None:
+        # we expected there to be something here
+        raise Exception("Syntax Error: expected another noun(s) after verb")
+    # we should be all good
+    output = {
+        "type": "normal_rule",
+        "left": left,
+        "verb": verb,
+        "right": right
+    }
+    return output
