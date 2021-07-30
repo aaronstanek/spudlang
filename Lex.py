@@ -21,6 +21,8 @@ def lex_number(line,index):
     # also returns updated index
     if index >= len(line):
         return index, None
+    if line[index] == "$":
+        return index+1, "$"
     try:
         # first explore if this is a two part fraction
         value = MyNumber.from_string(line[index]+" "+line[index+1])
@@ -72,6 +74,8 @@ def lex_noun_core(line,index):
     # if so, it returns the core
     if index >= len(line):
         return index, None
+    if line[index] == "$":
+        return index+1, ["$"]
     noun_core = line[index].split(".")
     # check for valid characters
     for noun_core_element in noun_core:
@@ -240,10 +244,10 @@ def lex_verb(line,index):
         index += 1
         if index >= len(line):
             raise Exception("Syntax Error: line ended unexpectedly")
-    if index[line] == "type" or index[line] == "types":
+    if line[index] == "type" or line[index] == "types":
         verb.append("type")
         index += 1
-    elif index[line] == "synonym" or index[line] == "synonyms":
+    elif line[index] == "synonym" or line[index] == "synonyms":
         verb.append("synonym")
         index += 1
     elif expect_modifier:

@@ -66,7 +66,7 @@ def main():
     # none of the strings are empty
     # but some of the lists may be
     print(lines)
-    lines = list(map(lambda x: Lex.lex_noun_sequence(x,0)[1], lines))
+    lines = list(map(Lex.lex_standard, lines))
     print(lines)
 
 if __name__ == "__main__":
