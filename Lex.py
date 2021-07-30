@@ -5,12 +5,22 @@
 
 from MyNumber import MyNumber
 
+keywords = {
+    "is", "are",
+    "a", "an",
+    "type", "types",
+    "synonym", "synonyms",
+    "of", "&"
+}
+
 def lex_number(line,index):
     # line is a list of strings (words)
     # index is an int
     # returns the first number at index
     # or None if no number
     # also returns updated index
+    if index >= len(line):
+        return index, None
     try:
         # first explore if this is a two part fraction
         value = MyNumber.from_string(line[index]+" "+line[index+1])
@@ -30,13 +40,69 @@ def lex_number(line,index):
         pass
     return index, None
 
-end_of_noun = {
-    "is", "are",
-    "a", "an",
-    "type", "types",
-    "synonym", "synonyms",
-    "of", "&"
-}
+def is_valid_noun_char(char,is_first):
+    # returns true iff the char can exist in a noun
+    # returns false iff the char cannot exist in the noun
+    # if is_first is True, then it check if char
+    # can be the first letter of a noun
+    num = ord(char)
+    if num == 95:
+        # _
+        return True
+    elif num >= 65 and num <= 90:
+        # uppercase
+        return True
+    elif num >= 97 and num <= 122:
+        # lowercase
+        return True
+    if is_first:
+        return False
+    # not first
+    if num >= 48 and num <= 57:
+        # numeral
+        return True
+    # not a recognized character
+    return False
+
+def lex_noun_core(line,index):
+    # line is a list of strings (words)
+    # index is an int
+    # only considers if line[index]
+    # could be a noun core
+    # if so, it returns the core
+    if index >= len(line):
+        return index, None
+    noun_core = line[index].split(".")
+    # check for valid characters
+    for noun_core_element in noun_core:
+        for char_index in range(len(noun_core_element)):
+            if not is_valid_noun_char(noun_core_element[char_index],char_index==0):
+                # we found an invalid character
+                if len(noun_core) > 1:
+                    # this can only be a malformed noun
+                    # or a misplaced number
+                    raise Exception(
+                        "Syntax Error: noun contained invalid character: " + str(noun_core_element)
+                        )
+                else:
+                    # this might be a keyword or something else
+                    return index, None
+    # no invalid characters
+    # check if it contains any empty segments
+    if any(map(lambda x: len(x) == 0, noun_core)):
+        # this can only be a malformed noun
+        raise Exception("Syntax Error: noun contained empty segment")
+    # check if it contains any keywords
+    global keywords
+    if any(map(lambda x: x in keywords, noun_core)):
+        # this is not allowed
+        if len(noun_core) > 2:
+            raise Exception("Syntax Error: noun contains keyword")
+        else:
+            # this is a keyword
+            return index, None
+    # we should be good at this point
+    return index+1, noun_core
 
 def lex_noun(line,index):
     # line is a list of strings (words)
