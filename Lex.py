@@ -96,13 +96,16 @@ def lex_noun_core(line,index):
     global keywords
     if any(map(lambda x: x in keywords, noun_core)):
         # this is not allowed
-        if len(noun_core) > 2:
+        if len(noun_core) > 1:
             raise Exception("Syntax Error: noun contains keyword")
         else:
             # this is a keyword
             return index, None
     # we should be good at this point
     return index+1, noun_core
+
+def lex_noun_props(line,index):
+
 
 def lex_noun(line,index):
     # line is a list of strings (words)
