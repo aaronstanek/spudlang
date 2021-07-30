@@ -105,7 +105,41 @@ def lex_noun_core(line,index):
     return index+1, noun_core
 
 def lex_noun_props(line,index):
-
+    # line is a list of strings (words)
+    # index is an int
+    # we expect + word pairs
+    props = []
+    global keywords
+    while True:
+        # it's ok if we hit the end of the line
+        # at this point
+        if index >= len(line):
+            return index, props
+        if line[index] == "+" or line[index] == "-":
+            # this must be a prop
+            props.append(line[index])
+            index += 1
+        else:
+            # this is not a prop
+            return index, props
+        # bad if we are at the end of the string now
+        if index >= len(line):
+            raise Exception("Syntax Error: line terminates after "+props[-1])
+        # check for invalid chars
+        for char_index in range(len(line[index])):
+            if not is_valid_noun_char(line[index][char_index],char_index==0):
+                # this is not a valid prop
+                # but we expected a valid prop
+                raise Exception("Syntax Error: invalid character in prop")
+        # all valid characters
+        # check if it is a keyword
+        if line[index] in keywords:
+            # we expected a prop
+            # not a keyword
+            raise Exception("Syntax Error: expected prop, got keyword")
+        # we should be good to go
+        props.append(line[index])
+        index += 1
 
 def lex_noun(line,index):
     # line is a list of strings (words)
