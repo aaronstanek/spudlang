@@ -4,6 +4,7 @@ import sys
 import os
 import hashlib
 import PreLex
+import Lex
 
 def load_file_raw(path):
     if path[-5:] != ".spud":
@@ -64,6 +65,8 @@ def main():
     # lines is now a list of lists of strings
     # none of the strings are empty
     # but some of the lists may be
+    print(lines)
+    lines = list(map(lambda x: Lex.lex_noun_sequence(x,0)[1], lines))
     print(lines)
 
 if __name__ == "__main__":
