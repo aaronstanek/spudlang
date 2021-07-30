@@ -158,14 +158,27 @@ def lex_noun(line,index):
     index, number = lex_number(line,index)
     # number is either a MyNumber object
     # or None
-    index, noun_core = lex_noun_core(line,index)
-    if noun_core is None:
+    index, noun_core_1 = lex_noun_core(line,index)
+    if noun_core_1 is None:
         # this cannot be a noun
         return initial_index, None
+    # there noun_core_1 might be the name of the noun
+    # or it might be units
+    index, noun_core_2 = lex_noun_core(line,index)
+    if noun_core_2 is None:
+        # the first thing was not a unit
+        unit = None
+        noun_core = noun_core_1
+    else:
+        # the first thing was a units
+        # the second was the noun core
+        unit = noun_core_1
+        noun_core = noun_core_2
     # this is a noun
     index, props = lex_noun_props(line,index)
     output = {
         "number": number,
+        "unit": unit,
         "core": noun_core,
         "props": props
     }
