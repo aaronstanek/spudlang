@@ -68,6 +68,7 @@ def main():
     # but some of the lists may be
     lines = list(map(Lex.lex_all, lines))
     lines = Parse.resolve_spans(lines)
+    lines = list(map(Parse.parse, lines))
     print(lines)
 
 if __name__ == "__main__":

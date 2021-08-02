@@ -1,6 +1,9 @@
 # defines functions for converting the output of the Lexer
 # into the input of the RuleBox
 
+from MyNumber import MyNumber
+from Ingredient import Ingredient
+
 def resolve_spans(lines):
     # currently the only span is the
     # multiply
@@ -29,3 +32,45 @@ def resolve_spans(lines):
     if len(factors) != 0:
         raise Exception("@begin without corresponding @end")
     return output
+
+def parse_ingredient(line):
+    left = line["left"]
+    if len(left) != 1:
+        raise Exception("Syntax Error: expected exactly one ingredient per line")
+    number = left[0]["number"]
+    unit = left[0]["unit"]
+    noun_core = left[0]["core"]
+    props = left[0]["props"]
+    if unit is None and number is not None:
+        unit = ["count"]
+    elif number is None and unit is not None:
+        raise Exception("Syntax Error: unit without quantity")
+    elif unit is None and number is None:
+        number = MyNumber((1,0))
+        unit = ["mealsworth"]
+    active_props = set()
+    for p in props:
+        if p == "+":
+            pass
+        elif p == "-":
+            raise Exception("Syntax Error: - not allowed in ingredient declaration")
+        else:
+            active_props.add(p)
+    return Ingredient(number,unit,noun_core,active_props)
+    
+
+def parse(line):
+    if line["type"] == "ingredient":
+        return parse_ingredient(line)
+    elif line["type"] == "normal_rule":
+        pass
+    elif line["type"] == "hold_rule":
+        pass
+    elif line["type"] == "holdunit_rule":
+        pass
+    elif line["type"] == "dec_rule":
+        pass
+    elif line["type"] == "frac_rule":
+        pass
+    else:
+        raise Exception("Internal Error: unknown line type")
