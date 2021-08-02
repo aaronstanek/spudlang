@@ -1,5 +1,9 @@
 # line
 / other line
 
+@begin multiply 2
+4 head cabbage
+@end
+
 @import ../a.spud
 @import ../b.spud

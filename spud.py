@@ -66,7 +66,7 @@ def main():
     # none of the strings are empty
     # but some of the lists may be
     print(lines)
-    lines = list(map(Lex.lex_standard, lines))
+    lines = list(map(Lex.lex_all, lines))
     print(lines)
 
 if __name__ == "__main__":

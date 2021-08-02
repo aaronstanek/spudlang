@@ -297,3 +297,55 @@ def lex_standard(line):
         "right": right
     }
     return output
+
+at_commands = {
+    "@hold", "@holdunit",
+    "@dec", "@frac"
+}
+
+def lex_at(line):
+    # expect @something
+    global at_commands
+    if line[0] in at_commands:
+        command = line[0][1:] + "_rule"
+        index, left = lex_noun_sequence(line,0)
+        if left is None:
+            raise Exception("Syntax Error: expected noun after "+line[0])
+        if index < len(line):
+            raise Exception("Syntax Error: line ended unexpectedly")
+        output = {
+            "type": command,
+            "left": left
+        }
+        return output
+    if line[0] == "@end":
+        if len(line) > 1:
+            raise Exception("Syntax Error: @end does not take arguments")
+        return {"type": "end_span"}
+    if line[0] == "@begin":
+        if len(line) < 2:
+            raise Exception("Syntax Error: expected span name after @begin")
+        if line[1] == "multiply":
+            # we expect there to be a number after this
+            index, number = lex_number(line,2)
+            if number is None:
+                raise Exception("Syntax Error: expected number after @begin multiply")
+            if index < len(line):
+                raise Exception("Syntax Error: line ended unexpectedly: "+str(line))
+            output = {
+                "type": "begin_span",
+                "name": "multiply",
+                "value": number
+            }
+            return output
+        raise Exception("Syntax Error: unkown span name after @begin")
+    return None
+
+def lex_all(line):
+    output = lex_standard(line)
+    if output is not None:
+        return output
+    output = lex_at(line)
+    if output is not None:
+        return output
+    raise Exception("Syntax Error: unable to lex line with contents: "+str(line))
