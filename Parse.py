@@ -3,6 +3,8 @@
 
 from MyNumber import MyNumber
 from Ingredient import Ingredient
+import RuleOutput
+import Rule
 
 def resolve_spans(lines):
     # currently the only span is the
@@ -58,6 +60,16 @@ def parse_ingredient(line):
             active_props.add(p)
     return Ingredient(number,unit,noun_core,active_props)
     
+def parse_normal_rule(line):
+    if line["verb"] == ["is"]:
+        pass
+    elif line["verb"] == ["is","type"]:
+        pass
+    elif line["verb"] == ["is","synonym"]:
+        # insertion
+        # come back to here
+    else:
+        raise Exception("Internal Error: unknown verb")
 
 def parse(line):
     if line["type"] == "ingredient":
