@@ -2,7 +2,6 @@
 # use objects to hold lex results
 # in place of dicts
 
-from ast import Num
 from MyNumber import MyNumber
 
 class NumberLexer(object):
@@ -260,7 +259,7 @@ class NounLexer(object):
 
 class NounSequenceLexer(object):
     def __init__(self):
-        self.sequence = []
+        self.sequence = [] # contains NounLexer
     @staticmethod
     def lex(line,index):
         # line is a list of strings (words)
@@ -304,4 +303,61 @@ class NounSequenceLexer(object):
             # there is more to the sequence
             index += 1
             expect_noun = True
-            
+
+class VerbLexer(object):
+    def __init__(self):
+        self.verb = [] # contains str
+    @staticmethod
+    def lex(line,index):
+        # lexes a verb starting at index in line
+        # index is an int
+        # line is list of string (words)
+        # returns the index after the verb
+        if index >= len(line):
+            # nothing to lex
+            return index, None
+        output = VerbLexer()
+        if line[index] in {"is","are"}:
+            output.verb.append("is")
+            index += 1
+        else:
+            # not a verb
+            # but may be something else valid
+            return index, None
+        if index >= len(line):
+            # we just got an is
+            # we were expecting more
+            raise Exception("Syntax Error: reached end of line after is: "+str(line))
+        if line[index] == "a":
+            # a is entirely optional
+            # but it will require more verb after it
+            has_a = True
+            index += 1
+            if index >= len(line):
+                raise Exception("Syntax Error: reached end of line after a: "+str(line))
+        else:
+            has_a = False
+        if line[index] in {"type","types"}:
+            # we have more verb
+            output.verb.append("type")
+            index += 1
+        elif line[index] in {"synonym","synonyms"}:
+            # we have more verb
+            output.verb.append("synonym")
+            index += 1
+        else:
+            # we do not have more verb
+            if has_a:
+                # we were expecting more verb
+                raise Exception("Syntax Error: expected type or synonym after a: "+str(line))
+            else:
+                # it's ok for the verb to end here
+                return index, output
+        if index >= len(line):
+            raise Exception("Syntax Error: line ends after verb: "+str(line))
+        if line[index] == "of":
+            # optional
+            index += 1
+            if index >= len(line):
+                raise Exception("Syntax Error: line ends after verb: "+str(line))
+        return line, output
