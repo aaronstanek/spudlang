@@ -2,7 +2,7 @@
 # use objects to hold lex results
 # in place of dicts
 
-from _typeshed import OpenTextModeUpdating
+from ast import Num
 from MyNumber import MyNumber
 
 class NumberLexer(object):
@@ -200,3 +200,60 @@ class PropsLexer(object):
                 raise Exception("Syntax Error: expected prop, got keyword, in: "+str(line))
             output.props.append( (line[index],value) )
             index += 1
+
+class NounLexer(object):
+    def __init__(self):
+        self.count = None
+        self.unit = None
+        self.name = None
+        self.props = None
+        # exact same names as Ingredient
+    def must_not_be_defined(self,field):
+        return (getattr(self,field) is None)
+    def must_be_defined(self,field):
+        return (getattr(self,field) is not None)
+    def must_not_be_wildcard(self,field):
+        # applies to self.count,
+        # self.unit and self.name
+        if getattr(self,field) is None:
+            return True
+        else:
+            return not getattr(self,field).wildcard
+    @staticmethod
+    def lex(line,index):
+        # line is a list of strings (words)
+        # index is an int
+        # lexes line, starting at index
+        # returns the first index after the noun
+        # and the interpretation of the noun
+        # returns same index and None if a noun cannot be found at that point
+        # the dictionary returned has the format
+        if index >= len(line):
+            return index, None
+        fallback_index = index
+        output = NounLexer()
+        # first see if there is a number
+        index, output.count = NumberLexer.lex(line,index)
+        # we don't actually have to know if it returned
+        # to continue
+        index, noun_core_1 = NounCoreLexer.lex(line,index)
+        if noun_core_1 is None:
+            # this cannot be a noun of any kind
+            # but it might be something else
+            return fallback_index, None
+        index, noun_core_2 = NounCoreLexer.lex(line,index)
+        # we know that noun_core_1 is not None
+        if noun_core_2 is None:
+            # there is only a value, and no unit
+            output.name = noun_core_1
+        else:
+            # both noun_core_1 and
+            # noun_core_2 are defined
+            # the first is a unit
+            # the second is a name
+            output.unit = noun_core_1
+            output.name = noun_core_2
+        index, output.props = PropsLexer.lex(line,index)
+        # we don't actually have to know if it returned
+        # to continue
+        return index, output
