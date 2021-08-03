@@ -304,10 +304,18 @@ class NounLexer(object):
 class NounSequenceLexer(object):
     def __init__(self):
         self.sequence = [] # contains NounLexer
-    def _check_consistent_format(self):
-        # we want to make sure that all the nouns have a consistent
-        # format, field all defined, or field not all defined
-        # don't consider props
+        # self.format will be a NounFormat object, never None
+    def _compute_format(self,line):
+        # assigns self.format
+        # raises an Exception on inconsistent format
+        # is run after self.sequence is filled
+        output = self.sequence[0].get_format()
+        for i in range(1,len(self.sequence)):
+            output = output.merge(self.sequence[i].get_format())
+            if output is None:
+                # inconsistent formating
+                raise Exception("Syntax Error: inconsistent noun format: "+str(line))
+        self.format = output
     @staticmethod
     def lex(line,index):
         # line is a list of strings (words)
@@ -328,6 +336,7 @@ class NounSequenceLexer(object):
                     return index, None
                 else:
                     # there was a noun at the end of the line
+                    output._compute_format(line)
                     return index, output
             # line[index] is defined
             index, noun = NounLexer(line,index)
@@ -338,15 +347,18 @@ class NounSequenceLexer(object):
                 if len(output.sequence) == 0:
                     return index, None
                 else:
+                    output._compute_format(line)
                     return index, output
             output.sequence.append(noun)
             # this might be the end of the line
             if index >= len(line):
+                output._compute_format(line)
                 return index, output
             # there is more line
             # if the next token is not $
             # then this is the end of the sequence
             if line[index] != "$":
+                output._compute_format(line)
                 return index, output
             # there is more to the sequence
             index += 1
