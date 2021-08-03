@@ -2,6 +2,7 @@
 # use objects to hold lex results
 # in place of dicts
 
+from _typeshed import OpenTextModeUpdating
 from MyNumber import MyNumber
 
 class NumberLexer(object):
@@ -200,6 +201,39 @@ class PropsLexer(object):
             output.props.append( (line[index],value) )
             index += 1
 
+class NounFormat(object):
+    # 0 is none, 1 is defined, 2 is wildcard
+    def __init__(self):
+        self.fields = {}
+    def add_undefined(self,field):
+        self.fields[field] = 0
+    def add_defined(self,field):
+        self.fields[field] = 1
+    def add_wildcard(self,field):
+        self.fields[field] = 2
+    def merge(self,other):
+        output = NounFormat()
+        # we can assume that self
+        # and other have the same keys
+        # returns None on failure
+        for key in self.fields:
+            self_value = self.fields[key]
+            other_value = other.fields[key]
+            if self_value == other_value:
+                output.fields[key] = self_value
+            elif self_value == 0 or other_value == 0:
+                # one is undefined
+                # the other is
+                # inconsistent format
+                return None
+            else:
+                # neither is 0
+                # but they are different
+                # one must be 1,
+                # and the other 2
+                # we default to the wildcard
+                output.fields[key] = 2
+
 class NounLexer(object):
     def __init__(self):
         self.count = None # NumberLexer or None
@@ -207,17 +241,27 @@ class NounLexer(object):
         self.name = None # NounCoreLexer or None
         self.props = None # PropsLexer or None
         # exact same names as Ingredient
-    def must_not_be_defined(self,field):
-        return (getattr(self,field) is None)
-    def must_be_defined(self,field):
-        return (getattr(self,field) is not None)
-    def must_not_be_wildcard(self,field):
-        # applies to self.count,
-        # self.unit and self.name
-        if getattr(self,field) is None:
-            return True
+    def get_format(self):
+        output = NounFormat()
+        if self.count is None:
+            output.add_undefined("count")
+        elif self.count.wildcard:
+            output.add_wildcard("count")
         else:
-            return not getattr(self,field).wildcard
+            output.add_defined("count")
+        if self.unit is None:
+            output.add_undefined("unit")
+        elif self.unit.wildcard:
+            output.add_wildcard("unit")
+        else:
+            output.add_defined("unit")
+        if self.name is None:
+            output.add_undefined("name")
+        elif self.name.wildcard:
+            output.add_wildcard("name")
+        else:
+            output.add_defined("name")
+        return output
     @staticmethod
     def lex(line,index):
         # line is a list of strings (words)
@@ -260,6 +304,10 @@ class NounLexer(object):
 class NounSequenceLexer(object):
     def __init__(self):
         self.sequence = [] # contains NounLexer
+    def _check_consistent_format(self):
+        # we want to make sure that all the nouns have a consistent
+        # format, field all defined, or field not all defined
+        # don't consider props
     @staticmethod
     def lex(line,index):
         # line is a list of strings (words)
