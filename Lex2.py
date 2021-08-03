@@ -4,34 +4,41 @@
 
 from MyNumber import MyNumber
 
-def lex_number(line,index):
-    # line is a list of strings (words)
-    # index is an int
-    # returns the first number at index
-    # or None if no number
-    # also returns updated index
-    if index >= len(line):
+class NumberLexer(object):
+    def __init__(self,number):
+        # number is a MyNumber object
+        # or None
+        self.wildcard = (number is None)
+        self.number = number
+    @staticmethod
+    def lex(line,index):
+        # line is a list of strings (words)
+        # index is an int
+        # returns the first number at index
+        # or None if no number
+        # also returns updated index
+        if index >= len(line):
+            return index, None
+        if line[index] == "$":
+            return index+1, NumberLexer(None)
+        try:
+            # first explore if this is a two part fraction
+            value = MyNumber.from_string(line[index]+" "+line[index+1])
+            # if that did not produce an error,
+            # then we are all set
+            return index+2, NumberLexer(value)
+        except:
+            # that didn't work
+            pass
+        try:
+            # try just one part
+            value = MyNumber.from_string(line[index])
+            # if that worked, then we still have a number
+            return index+1, NumberLexer(value)
+        except:
+            # we don't have a number
+            pass
         return index, None
-    if line[index] == "$":
-        return index+1, "$"
-    try:
-        # first explore if this is a two part fraction
-        value = MyNumber.from_string(line[index]+" "+line[index+1])
-        # if that did not produce an error,
-        # then we are all set
-        return index+2, value
-    except:
-        # that didn't work
-        pass
-    try:
-        # try just one part
-        value = MyNumber.from_string(line[index])
-        # if that worked, then we still have a number
-        return index+1, value
-    except:
-        # we don't have a number
-        pass
-    return index, None
 
 keywords = {
     "is", "are",
