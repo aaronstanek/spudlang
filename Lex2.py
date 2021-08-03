@@ -152,7 +152,7 @@ class NounCoreLexer(object):
 class PropsLexer(object):
     def __init__(self):
         # self.props is list(tuple(str,bool))
-        # jsut like the input to PropertiesRuleOutput
+        # just like the input to PropertiesRuleOutput
         self.props = []
     @staticmethod
     def lex(line,index):
@@ -203,10 +203,10 @@ class PropsLexer(object):
 
 class NounLexer(object):
     def __init__(self):
-        self.count = None
-        self.unit = None
-        self.name = None
-        self.props = None
+        self.count = None # NumberLexer or None
+        self.unit = None # NounCoreLexer or None
+        self.name = None # NounCoreLexer or None
+        self.props = None # PropsLexer or None
         # exact same names as Ingredient
     def must_not_be_defined(self,field):
         return (getattr(self,field) is None)
@@ -257,3 +257,51 @@ class NounLexer(object):
         # we don't actually have to know if it returned
         # to continue
         return index, output
+
+class NounSequenceLexer(object):
+    def __init__(self):
+        self.sequence = []
+    @staticmethod
+    def lex(line,index):
+        # line is a list of strings (words)
+        # index is an int
+        # lexes line, starting at index
+        # returns the first index after the noun sequence
+        # and an array of the nouns (can be empty)
+        # returns same index and None if a noun cannot be found at that point
+        output = NounSequenceLexer()
+        expect_noun = False
+        while True:
+            if index >= len(line):
+                # nothing more to lex
+                if expect_noun:
+                    raise Exception("Syntax Error: expected noun after $: "+str(line))
+                if len(output.sequence) == 0:
+                    # there was never anything to lex
+                    return index, None
+                else:
+                    # there was a noun at the end of the line
+                    return index, output
+            # line[index] is defined
+            index, noun = NounLexer(line,index)
+            if noun is None:
+                # there is no noun here
+                if expect_noun:
+                    raise Exception("Syntax Error: expected noun after $: "+str(line))
+                if len(output.sequence) == 0:
+                    return index, None
+                else:
+                    return index, output
+            output.sequence.append(noun)
+            # this might be the end of the line
+            if index >= len(line):
+                return index, output
+            # there is more line
+            # if the next token is not $
+            # then this is the end of the sequence
+            if line[index] != "$":
+                return index, output
+            # there is more to the sequence
+            index += 1
+            expect_noun = True
+            
