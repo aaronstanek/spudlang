@@ -2,6 +2,7 @@
 # use objects to hold lex results
 # in place of dicts
 
+from _typeshed import OpenTextModeUpdating
 from MyNumber import MyNumber
 
 class NumberLexer(object):
@@ -147,3 +148,55 @@ class NounCoreLexer(object):
         # or invalid characters
         # it's probably good to go
         return index+1, output
+
+class PropsLexer(object):
+    def __init__(self):
+        # self.props is list(tuple(str,bool))
+        # jsut like the input to PropertiesRuleOutput
+        self.props = []
+    @staticmethod
+    def lex(line,index):
+        # line is a list of strings (words)
+        # index is an int
+        # we expect + word pairs
+        # returns PropsLexer or None
+        output = PropsLexer()
+        while True:
+            if index >= len(line):
+                # we have exhaused all
+                # that there is to lex here
+                if len(output.props):
+                    return index, output
+                else:
+                    return index, None
+            if line[index] == "+":
+                value = True
+            elif line[index] == "-":
+                value = False
+            else:
+                # this is not a prop
+                if len(output.props):
+                    return index, output
+                else:
+                    return index, None
+            # value if defined
+            index += 1
+            if index >= len(line):
+                # we can't end a line with + or -
+                raise Exception("Syntax Error: line cannot end with "+line[index-1]+" in : "+str(line))
+            # line[index] is defined
+            # check for invalid characters
+            for char_index in len(line[index]):
+                char = line[index][char_index]
+                if not is_valid_noun_char(char,char_index==0):
+                    # there was a + or -
+                    # the user intended this to be a prop
+                    raise Exception("Syntax Error: invalid character in prop: "+str(line))
+            # all the caracters are valid
+            global keywords
+            if line[index] in keywords:
+                # the user intended this to be a prop
+                # not a keyword
+                raise Exception("Syntax Error: expected prop, got keyword, in: "+str(line))
+            output.props.append( (line[index],value) )
+            index += 1
