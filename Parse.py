@@ -5,6 +5,7 @@ from MyNumber import MyNumber
 from Ingredient import Ingredient
 import RuleOutput
 import Rule
+import Pattern
 
 def resolve_spans(lines):
     # currently the only span is the
@@ -60,6 +61,14 @@ def parse_ingredient(line):
             active_props.add(p)
     return Ingredient(number,unit,noun_core,active_props)
     
+def parse_insertion(left_elem,right):
+    # left_elem is a noun
+    # right is list of nouns
+    if left_elem["number"] is not None:
+        raise Exception("Syntax Error: expected left side of synonym statement to contain no numbers")
+    if left_elem["unit"] 
+    # done here
+
 def parse_normal_rule(line):
     if line["verb"] == ["is"]:
         pass
@@ -67,7 +76,7 @@ def parse_normal_rule(line):
         pass
     elif line["verb"] == ["is","synonym"]:
         # insertion
-        # come back to here
+        return list(map(lambda x: parse_insertion(x,line["right"]), line["left"]))
     else:
         raise Exception("Internal Error: unknown verb")
 
