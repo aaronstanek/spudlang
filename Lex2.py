@@ -476,3 +476,57 @@ class StandardLineLexer(object):
                     raise Exception("Syntax Error: is "+verb_word+" statement may not use wildcards: "+str(line))
         # at this point, it all checks out
         return output
+
+at_commands = {
+    "@hold","@holdunit",
+    "@dec","@frac",
+    "@begin","@end"
+}
+
+class AtCommandLexer(object):
+    def __init__(self):
+        self.left = None # Noun sequence or NumberLexer or None
+        # self.verb list of words (strings)
+    @staticmethod
+    def lex(line,index=0):
+        # index is an int
+        # line is list of string (words)
+        # expect @verb (verb) noun_seq
+        # unlike other lex functions, index is optional
+        # and no index is returned from the function
+        if index >= len(line):
+            return None
+        global at_commands
+        if line[index] not in at_commands:
+            return None
+        output = AtCommandLexer()
+        output.verb = [line[index]]
+        index += 1
+        if output.verb[0] == "@end":
+            pass
+        elif output.verb[0] == "@begin":
+            # we expect more verb
+            if index >= len(line):
+                raise Exception("Syntax Error: expect another verb keyword after @begin: "+str(line))
+            if line[index] != "multiply":
+                raise Exception("Syntax Error: invalid verb keyword after @begin: "+str(line))
+            output.verb.append(line[index])
+            index += 1
+            # we expect a number
+            index, output.left = NumberLexer(line,index)
+            if output.left is None:
+                raise Exception("Syntax Error: expected number after @begin multiply: "+str(line))
+        else:
+            # we expect a noun_seq
+            index, output.left = NounSequenceLexer(line,index)
+            if output.left is None:
+                raise Exception("Syntax Error: expected noun(s) after verb: "+str(line))
+            # we expect no count
+            # we expect name to be defined or wildcard
+            # but that's true anyway
+            if output.left.format.get("count") != 0:
+                raise Exception("Syntax Error: noun(s) should not have a number here: "+str(line))
+        # we should be at the end of the line now
+        if index < len(line):
+            raise Exception("Syntax Error: expected end of line: "+str(line))
+        return output
