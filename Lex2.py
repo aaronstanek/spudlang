@@ -541,6 +541,8 @@ class AtCommandLexer(object):
             index, output.left = NumberLexer.lex(line,index)
             if output.left is None:
                 raise Exception("Syntax Error: expected number after @begin multiply: "+str(line))
+            if output.left.wildcard:
+                raise Exception("Syntax Error: wildcard is not allowed after @begin multiply: "+str(line))
         else:
             # we expect a noun_seq
             index, output.left = NounSequenceLexer.lex(line,index)
