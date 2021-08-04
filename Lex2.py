@@ -2,7 +2,6 @@
 # use objects to hold lex results
 # in place of dicts
 
-from _typeshed import OpenTextModeUpdating
 from MyNumber import MyNumber
 
 class NumberLexer(object):
@@ -43,7 +42,7 @@ class NumberLexer(object):
 
 keywords = {
     "is", "are",
-    "a", "an",
+    "a",
     "type", "types",
     "synonym", "synonyms",
     "of", "&"
@@ -211,6 +210,8 @@ class NounFormat(object):
         self.fields[field] = 1
     def add_wildcard(self,field):
         self.fields[field] = 2
+    def get(self,field):
+        return self.fields[field]
     def merge(self,other):
         output = NounFormat()
         # we can assume that self
@@ -421,3 +422,57 @@ class VerbLexer(object):
             if index >= len(line):
                 raise Exception("Syntax Error: line ends after verb: "+str(line))
         return line, output
+
+class StandardLineLexer(object):
+    def __init__(self):
+        self.left = None # NounSequenceLexer or None
+        self.verb = None # VerbLexer or None
+        self.right = None # NounSequenceLexer or None
+    @staticmethod
+    def lex(line,index=0):
+        # index is an int
+        # line is list of string (words)
+        # expect noun_seq (verb noun_seq)
+        # unlike other lex functions, index is optional
+        # and no index is returned from the function
+        output = StandardLineLexer()
+        index, output.left = NounSequenceLexer.lex(line,index)
+        if output.left is None:
+            # this is not a standard line
+            return None
+        # we may or may not have a verb after this
+        index, output.verb = VerbLexer.lex(line,index)
+        if output.verb is None:
+            # we better be at the end of the line
+            if index >= len(line):
+                return output
+            else:
+                raise Exception("Syntax Error: expected verb: "+str(line))
+        # we expect another noun sequence after this
+        index, output.right = NounSequenceLexer(line,index)
+        if output.right is None:
+            raise Exception("Syntax Error: expected noun(s) after verb: "+str(line))
+        # we better be at the end of the line
+        if index < len(line):
+            raise Exception("Syntax Error: expected end of line: "+str(line))
+        # the overall syntax should be good at this point
+        # we just need to check agreement between the verb and the noun sequences
+        # first make sure that the left and right are compatible
+        if output.left.format.merge(output.right.format) is None:
+            raise Exception("Syntax Error: left and right sides have different formats: "+str(line))
+        # is by itself has no restrictions other than having
+        # the two sides be compatible
+        if output.verb.verb == ["is","type"] or output.verb.verb == ["is","synonym"]:
+            verb_word = output.verb.verb[1]
+            # we expect cores defined, not wildcard
+            # we expect no units or counts
+            for format in [output.left.format,output.right.format]:
+                if format.get("count") != 0:
+                    raise Exception("Syntax Error: is "+verb_word+" statement may not use count: "+str(line))
+                if format.get("unit") != 0:
+                    raise Exception("Syntax Error: is "+verb_word+" statement may not use units: "+str(line))
+                if format.get("name") != 1:
+                    # every noun will have a name, so if it's not 1 then it must be 2
+                    raise Exception("Syntax Error: is "+verb_word+" statement may not use wildcards: "+str(line))
+        # at this point, it all checks out
+        return output
