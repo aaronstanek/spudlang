@@ -99,7 +99,7 @@ class NounCoreLexer(object):
     def _scan_for_empty_segments(self):
         # returns None
         # throws if there are any empty segments
-        if any(lambda x: len(x) == 0, self.noun_core):
+        if any(map(lambda x: len(x) == 0, self.noun_core)):
             # if there is an empty segment anywhere
             # then we can be sure that it is a Syntax Issue
             raise Exception("Syntax Error: empty segment in noun: "+str(self.noun_core))
@@ -109,7 +109,7 @@ class NounCoreLexer(object):
         # returns False if there are, but this might actually
         # be a valid keyword
         global keywords
-        if any(lambda x: x in keywords, self.noun_core):
+        if any(map(lambda x: x in keywords, self.noun_core)):
             # it contains a keyword
             if len(self.noun_core) > 1:
                 # clearly intended to be a noun
@@ -340,7 +340,7 @@ class NounSequenceLexer(object):
                     output._compute_format(line)
                     return index, output
             # line[index] is defined
-            index, noun = NounLexer(line,index)
+            index, noun = NounLexer.lex(line,index)
             if noun is None:
                 # there is no noun here
                 if expect_noun:
@@ -449,7 +449,7 @@ class StandardLineLexer(object):
             else:
                 raise Exception("Syntax Error: expected verb: "+str(line))
         # we expect another noun sequence after this
-        index, output.right = NounSequenceLexer(line,index)
+        index, output.right = NounSequenceLexer.lex(line,index)
         if output.right is None:
             raise Exception("Syntax Error: expected noun(s) after verb: "+str(line))
         # we better be at the end of the line
@@ -530,3 +530,12 @@ class AtCommandLexer(object):
         if index < len(line):
             raise Exception("Syntax Error: expected end of line: "+str(line))
         return output
+
+def lex(line):
+    output = StandardLineLexer.lex(line)
+    if output is not None:
+        return output
+    output = AtCommandLexer.lex(line)
+    if output is not None:
+        return output
+    raise Exception("Syntax Error: unable to interpret line: "+str(line))
