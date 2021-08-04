@@ -10,6 +10,11 @@ class NumberLexer(object):
         # or None
         self.wildcard = (number is None)
         self.number = number
+    def multiply(self,factor):
+        # factor is a MyNumber object
+        # only called if this is an ingredient declaration
+        if not self.wildcard:
+            self.number = self.number * factor
     @staticmethod
     def lex(line,index):
         # line is a list of strings (words)
@@ -264,6 +269,11 @@ class NounLexer(object):
         else:
             output.add_defined("name")
         return output
+    def multiply(self,factor):
+        # factor is a MyNumber object
+        # only called if this is an ingredient declaration
+        if self.count is not None:
+            self.count.multiply(factor)
     @staticmethod
     def lex(line,index):
         # line is a list of strings (words)
@@ -318,6 +328,12 @@ class NounSequenceLexer(object):
                 # inconsistent formating
                 raise Exception("Syntax Error: inconsistent noun format: "+str(line))
         self.format = output
+    def multiply(self,factor):
+        # factor is a MyNumber object
+        # only called if this is an ingredient
+        # we know that counts are defined
+        for x in self.sequence:
+            x.multiply(factor)
     @staticmethod
     def lex(line,index):
         # line is a list of strings (words)
@@ -429,6 +445,12 @@ class StandardLineLexer(object):
         self.left = None # NounSequenceLexer or None
         self.verb = None # VerbLexer or None
         self.right = None # NounSequenceLexer or None
+    def multiply(self,factor):
+        # factor is a MyNumber object
+        # only forward the call if this
+        # is an ingredient declaration
+        if self.verb is None:
+            self.left.multiply(factor)
     @staticmethod
     def lex(line,index=0):
         # index is an int
@@ -488,6 +510,8 @@ class AtCommandLexer(object):
     def __init__(self):
         self.left = None # Noun sequence or NumberLexer or None
         # self.verb list of words (strings)
+    def multiply(self,factor):
+        pass
     @staticmethod
     def lex(line,index=0):
         # index is an int
