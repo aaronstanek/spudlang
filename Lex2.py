@@ -359,7 +359,7 @@ class NounSequenceLexer(object):
             # there is more line
             # if the next token is not $
             # then this is the end of the sequence
-            if line[index] != "$":
+            if line[index] != "&":
                 output._compute_format(line)
                 return index, output
             # there is more to the sequence
