@@ -3,6 +3,7 @@
 from Lex2 import StandardLineLexer, AtCommandLexer
 import Pattern
 import RuleOutput
+import Rule
 
 def resolve_begin_end(lines):
     # lines is a list of lex result objects
@@ -60,3 +61,20 @@ def parse_properties_edit(base,noun):
         return base
     else:
         return RuleOutput.PropertiesRuleOutput(base,noun.props.props)
+
+def parse_renaming_rule(left,right):
+    # left and right are NounSequenceLexer objects
+    # they have the correct format (SinglePattern)
+    # no wildcards
+    # returns a list of Rule objects
+    right_outputs = list(map(
+        lambda right_noun: parse_properties_edit(
+            RuleOutput.RenamingRuleOutput(right_noun.name.noun_core),
+                right_noun),
+        right))
+    # list of RenamingRuleOutput
+    # or PropertiesRuleOutput
+    return list(map(
+        lambda left_noun: Rule.Rule(parse_pattern(left_noun),right_outputs),
+        left
+    ))
