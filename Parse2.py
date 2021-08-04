@@ -79,6 +79,28 @@ def parse_renaming_rule(left,right):
         left
     ))
 
+def parse_single_conversion(left,right):
+    # left and right are NounSequenceLexer objects
+    # they have the correct format (SinglePattern)
+    # no wildcards
+    # returns a list of Rule objects
+    rules = []
+    for left_noun in left:
+        right_outputs = []
+        for right_noun in right:
+            ratio = left_noun.count.multiplicative_inverse() * right_noun.count
+            right_outputs.append(RuleOutput.SingleConvertingRuleOutput(
+                ratio,
+                right_noun.name.noun_core
+            ))
+        rules.append(
+            Rule.Rule(
+                parse_pattern(left_noun),
+                right_outputs
+            )
+        )
+    return rules
+
 def parse_standard_rule(line):
     # line is a StandardLineLexer
     # we know that verb is not None
@@ -95,3 +117,14 @@ def parse_standard_rule(line):
         if m == 6:
             # it's a renaming rule
             return parse_renaming_rule(line)
+        m = 0
+        for f in [line.left.format,line.right.format]:
+            if f.get("count") == 1:
+                m += 1
+            if f.get("unit") == 0:
+                m += 1
+            if f.get("name") == 1:
+                m += 1
+        if m == 6:
+            # it's a single converting rule
+            return parse_single_conversion(line)
