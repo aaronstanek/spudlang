@@ -234,6 +234,7 @@ class NounFormat(object):
                 # and the other 2
                 # we default to the wildcard
                 output.fields[key] = 2
+        return output
 
 class NounLexer(object):
     def __init__(self):
