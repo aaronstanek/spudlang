@@ -510,8 +510,6 @@ class AtCommandLexer(object):
     def __init__(self):
         self.left = None # Noun sequence or NumberLexer or None
         # self.verb list of words (strings)
-    def multiply(self,factor):
-        pass
     @staticmethod
     def lex(line,index=0):
         # index is an int
