@@ -1,5 +1,6 @@
 # second attempt at writing a parser
 
+from MyNumber import MyNumber
 from Lex2 import StandardLineLexer, AtCommandLexer
 import Pattern
 import RuleOutput
@@ -88,7 +89,7 @@ def parse_single_conversion(left,right):
     for left_noun in left:
         right_outputs = []
         for right_noun in right:
-            ratio = left_noun.count.multiplicative_inverse() * right_noun.count
+            ratio = left_noun.count.number.multiplicative_inverse() * right_noun.count.number
             right_outputs.append(RuleOutput.SingleConvertingRuleOutput(
                 ratio,
                 right_noun.name.noun_core
@@ -101,30 +102,57 @@ def parse_single_conversion(left,right):
         )
     return rules
 
+def parse_double_conversion(left,right):
+    # left and right are NounSequenceLexer objects
+    # they have the correct format (SinglePattern)
+    # there may be wildcards
+    # returns a list of Rule objects
+    rules = []
+    for left_noun in left:
+        right_outputs = []
+        for right_noun in right:
+            if right_noun.count.wildcard:
+                ratio = MyNumber((1,1))
+            else:
+                ratio = left_noun.count.number.multiplicative_inverse() * right_noun.count.number
+            right_outputs.append(RuleOutput.DoubleConvertingRuleOutput(
+                ratio,
+                right_noun.unit.noun_core,
+                right_noun.name.noun_core
+            ))
+        rules.append(
+            Rule.Rule(
+                parse_pattern(left_noun),
+                right_outputs
+            )
+        )
+    return rules
+
+def parse_standard_rule_helper(line,count_pattern,unit_pattern,name_pattern):
+    # line is a StandardLineLexer
+    # other arguments are lists of integers
+    # where the values of the integers conform to NounFormat
+    for f in [line.left.format,line.right.format]:
+        if f.get("count") not in count_pattern:
+            return False
+        if f.get("unit") not in unit_pattern:
+            return False
+        if f.get("name") not in name_pattern:
+            return False
+    return True
+
 def parse_standard_rule(line):
     # line is a StandardLineLexer
     # we know that verb is not None
     # we know that the line has consistent format
     if line.verb == ["is"]:
-        m = 0
-        for f in [line.left.format,line.right.format]:
-            if f.get("count") == 0:
-                m += 1
-            if f.get("unit") == 0:
-                m += 1
-            if f.get("name") == 1:
-                m += 1
-        if m == 6:
+        if parse_standard_rule_helper(line,[0],[0],[1]):
             # it's a renaming rule
             return parse_renaming_rule(line)
-        m = 0
-        for f in [line.left.format,line.right.format]:
-            if f.get("count") == 1:
-                m += 1
-            if f.get("unit") == 0:
-                m += 1
-            if f.get("name") == 1:
-                m += 1
-        if m == 6:
+        if parse_standard_rule_helper(line,[1],[0],[1]):
             # it's a single converting rule
             return parse_single_conversion(line)
+        if parse_standard_rule_helper(line,[1,2],[1,2],[1,2]):
+            # it's a double converting rule
+            return parse_double_conversion(line)
+    raise Exception("Parser Error: Unable to parse standard rule")
