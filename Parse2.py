@@ -1,6 +1,7 @@
 # second attempt at writing a parser
 
 from Lex2 import StandardLineLexer, AtCommandLexer
+import RuleOutput
 
 def resolve_begin_end(lines):
     # lines is a list of lex result objects
@@ -24,3 +25,15 @@ def resolve_begin_end(lines):
             raise Exception("Internal Error")
     if len(factors) != 0:
         raise Exception("Parse Error: @begin without corresponding @end")
+
+def parse_properties_edit(base,noun):
+    # rule is a RuleOutput of some kind
+    # noun is a NounLexer object
+    # we will if the noun does not have any
+    # property edits, then we will return the base
+    # if it does have property edits, then we will
+    # return a PropertiesRuleOutput
+    if noun.props is None:
+        return base
+    else:
+        return RuleOutput.PropertiesRuleOutput(base,noun.props.props)
