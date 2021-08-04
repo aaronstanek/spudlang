@@ -78,3 +78,20 @@ def parse_renaming_rule(left,right):
         lambda left_noun: Rule.Rule(parse_pattern(left_noun),right_outputs),
         left
     ))
+
+def parse_standard_rule(line):
+    # line is a StandardLineLexer
+    # we know that verb is not None
+    # we know that the line has consistent format
+    if line.verb == ["is"]:
+        m = 0
+        for f in [line.left.format,line.right.format]:
+            if f.get("count") == 0:
+                m += 1
+            if f.get("unit") == 0:
+                m += 1
+            if f.get("name") == 1:
+                m += 1
+        if m == 6:
+            # it's a renaming rule
+            return parse_renaming_rule(line)
