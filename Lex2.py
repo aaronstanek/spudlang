@@ -185,7 +185,7 @@ class PropsLexer(object):
                 raise Exception("Syntax Error: line cannot end with "+line[index-1]+" in : "+str(line))
             # line[index] is defined
             # check for invalid characters
-            for char_index in len(line[index]):
+            for char_index in range(len(line[index])):
                 char = line[index][char_index]
                 if not is_valid_noun_char(char,char_index==0):
                     # there was a + or -
@@ -514,12 +514,12 @@ class AtCommandLexer(object):
             output.verb.append(line[index])
             index += 1
             # we expect a number
-            index, output.left = NumberLexer(line,index)
+            index, output.left = NumberLexer.lex(line,index)
             if output.left is None:
                 raise Exception("Syntax Error: expected number after @begin multiply: "+str(line))
         else:
             # we expect a noun_seq
-            index, output.left = NounSequenceLexer(line,index)
+            index, output.left = NounSequenceLexer.lex(line,index)
             if output.left is None:
                 raise Exception("Syntax Error: expected noun(s) after verb: "+str(line))
             # we expect no count
