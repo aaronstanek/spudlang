@@ -72,13 +72,13 @@ def parse_renaming_rule(left,right):
     right_outputs = list(map(
         lambda right_noun: parse_properties_edit(
             RuleOutput.RenamingRuleOutput(right_noun.name.noun_core),
-                right_noun),
+                right_noun.sequence),
         right))
     # list of RenamingRuleOutput
     # or PropertiesRuleOutput
     return list(map(
         lambda left_noun: Rule.Rule(parse_pattern(left_noun),right_outputs),
-        left
+        left.sequence
     ))
 
 def parse_prefixing_rule(left,right):
@@ -90,12 +90,12 @@ def parse_prefixing_rule(left,right):
         lambda right_noun: parse_properties_edit(
             RuleOutput.PrefixingRuleOutput(right_noun.name.noun_core),
             right_noun),
-        right))
+        right.sequence))
     # list of RenamingRuleOutput
     # or PropertiesRuleOutput
     return list(map(
         lambda left_noun: Rule.Rule(parse_pattern(left_noun),right_outputs),
-        left
+        left.sequence
     ))
 
 def parse_inserting_rule(left,right):
@@ -104,12 +104,12 @@ def parse_inserting_rule(left,right):
     # no wildcards
     # returns a list of Rule objects
     rules = []
-    for left_noun in left:
+    for left_noun in left.sequence:
         pattern_size = len(left_noun.name.noun_core)
         right_outputs = list(map(
             lambda right_noun: RuleOutput.InsertingRuleOutput(
                 pattern_size,right_noun.name.noun_core),
-            right))
+            right.sequence))
         rules.append(Rule.Rule(parse_pattern(left.noun),right_outputs))
     return rules
 
@@ -119,9 +119,9 @@ def parse_single_conversion(left,right):
     # no wildcards
     # returns a list of Rule objects
     rules = []
-    for left_noun in left:
+    for left_noun in left.sequence:
         right_outputs = []
-        for right_noun in right:
+        for right_noun in right.sequence:
             ratio = left_noun.count.number.multiplicative_inverse() * right_noun.count.number
             right_outputs.append(RuleOutput.SingleConvertingRuleOutput(
                 ratio,
@@ -141,9 +141,9 @@ def parse_double_conversion(left,right):
     # there may be wildcards
     # returns a list of Rule objects
     rules = []
-    for left_noun in left:
+    for left_noun in left.sequence:
         right_outputs = []
-        for right_noun in right:
+        for right_noun in right.sequence:
             if right_noun.count.wildcard:
                 ratio = MyNumber((1,1))
             else:
@@ -237,13 +237,13 @@ def parse_hold(left):
     # left is a valid noun sequence
     return list(map(
         lambda left_noun: Rule.HoldRule(parse_pattern(left_noun),0),
-        left))
+        left.sequence))
 
 def parse_holdunit(left):
     # left is a valid noun sequence
     return list(map(
         lambda left_noun: Rule.HoldRule(parse_pattern(left_noun),4),
-        left))
+        left.sequence))
 
 def parse_dec(left):
     # left is a valid noun sequence
@@ -252,7 +252,7 @@ def parse_dec(left):
             parse_pattern(left_noun),
             RuleOutput.DecRuleOutputInstance
             ),
-        left))
+        left.sequence))
 
 def parse_frac(left):
     # left is a valid noun sequence
@@ -261,7 +261,7 @@ def parse_frac(left):
             parse_pattern(left_noun),
             RuleOutput.FracRuleOutputInstance
             ),
-        left))
+        left.sequence))
 
 def parse_at_command(line):
     # we know that line is an AtCommandLexer object
