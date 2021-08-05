@@ -103,7 +103,7 @@ class RuleBox(object):
             else:
                 for result in results:
                     self.resolve(output_array,result,mask=copy(mask))
-                    return
+                return
     def resolve_to_html_document(self,ig_array):
         if type(ig_array) != list:
             raise TypeError("Expected list")
