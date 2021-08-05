@@ -178,7 +178,8 @@ def parse_standard_rule(line):
     # line is a StandardLineLexer
     # we know that verb is not None
     # we know that the line has consistent format
-    if line.verb == ["is"]:
+    verb = line.verb.verb
+    if verb == ["is"]:
         if parse_standard_rule_helper(line,[0],[0],[1]):
             # it's a renaming rule
             return parse_renaming_rule(line.left,line.right)
@@ -188,11 +189,11 @@ def parse_standard_rule(line):
         if parse_standard_rule_helper(line,[1,2],[1,2],[1,2]):
             # it's a double converting rule
             return parse_double_conversion(line.left,line.right)
-    elif line.verb == ["is","type"]:
+    elif verb == ["is","type"]:
         if parse_standard_rule_helper(line,[0],[0],[1]):
             # it's a prefixing rule
             return parse_prefixing_rule(line.left,line.right)
-    elif line.verb == ["is","synonym"]:
+    elif verb == ["is","synonym"]:
         if parse_standard_rule_helper(line,[0],[0],[1]):
             # it's a inserting rule
             return parse_inserting_rule(line.left,line.right)
