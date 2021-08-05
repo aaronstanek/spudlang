@@ -51,9 +51,14 @@ class RuleBox(object):
     def __init__(self):
         self.rules = []
     def add(self,rule):
-        if not isinstance(rule,Rule):
-            raise TypeError("Expected Rule")
-        self.rules.append(rule)
+        if isinstance(rule,Rule):
+            self.rules.append(rule)
+        else:
+            if type(rule) == list:
+                for elem in rule:
+                    self.add(elem)
+            else:
+                raise TypeError("Expected Rule")
     def _search(self,ig,mask):
         # if is Ingredient
         # mask is a set of ints

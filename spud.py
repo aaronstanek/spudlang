@@ -6,6 +6,7 @@ import hashlib
 import PreLex
 import Lex
 import Parse
+import Rule
 
 def load_file_raw(path):
     if path[-5:] != ".spud":
@@ -19,7 +20,6 @@ def load_file_raw(path):
 def convert_to_absolute_pathnames(base,path):
     if os.path.isabs(path):
         return path
-    
 
 def recursive_load(path,seen=set()):
     # recursively loads all input files
@@ -70,12 +70,14 @@ def main():
     Parse.resolve_begin_end(lines)
     ingredients, rules = Parse.parse_all_lines(lines)
     del lines
-    print("ingredients")
-    for ingredient in ingredients:
-        print(ingredient.count, ingredient.unit, ingredient.name, ingredient.props)
-    print("rules")
-    for rule in rules:
-        print(rule.pattern,rule.outputs)
+    rulebox = Rule.RuleBox()
+    rulebox.add(rules)
+    del rules
+    html = rulebox.resolve_to_html_document(ingredients)
+    del ingredients
+    del rulebox
+    with open("ResultsTree.html","w") as file:
+        file.write(html)
 
 if __name__ == "__main__":
     main()
