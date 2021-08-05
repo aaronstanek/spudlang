@@ -83,7 +83,9 @@ class RuleBox(object):
                 best_index = i
                 best_match_token = match_token
         return best, best_index, best_match_token
-    def resolve(self,output_array,ig,mask=set()):
+    def resolve(self,output_array,ig,mask=None):
+        if mask is None:
+            mask = set()
         if type(output_array) != list:
             raise TypeError("Expected list")
         if not isinstance(ig,Ingredient):
