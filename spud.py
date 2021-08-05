@@ -70,8 +70,12 @@ def main():
     Parse2.resolve_begin_end(lines)
     ingredients, rules = Parse2.parse_all_lines(lines)
     del lines
-    print(ingredients)
-    print(rules)
+    print("ingredients")
+    for ingredient in ingredients:
+        print(ingredient.count, ingredient.unit, ingredient.name, ingredient.props)
+    print("rules")
+    for rule in rules:
+        print(rule.pattern,rule.outputs)
 
 if __name__ == "__main__":
     main()
