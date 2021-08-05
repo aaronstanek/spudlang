@@ -438,7 +438,7 @@ class VerbLexer(object):
             index += 1
             if index >= len(line):
                 raise Exception("Syntax Error: line ends after verb: "+str(line))
-        return line, output
+        return index, output
 
 class StandardLineLexer(object):
     def __init__(self):
