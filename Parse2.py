@@ -97,8 +97,20 @@ def parse_prefixing_rule(left,right):
         left
     ))
 
-def parse_insertion_rule(left,right):
-
+def parse_inserting_rule(left,right):
+    # left and right are NounSequenceLexer objects
+    # they have the correct format (SinglePattern)
+    # no wildcards
+    # returns a list of Rule objects
+    rules = []
+    for left_noun in left:
+        pattern_size = len(left_noun.name.noun_core)
+        right_outputs = list(map(
+            lambda right_noun: RuleOutput.InsertingRuleOutput(
+                pattern_size,right_noun.name.noun_core),
+            right))
+        rules.append(Rule.Rule(parse_pattern(left.noun),right_outputs))
+    return rules
 
 def parse_single_conversion(left,right):
     # left and right are NounSequenceLexer objects
@@ -179,4 +191,8 @@ def parse_standard_rule(line):
         if parse_standard_rule_helper(line,[0],[0],[1]):
             # it's a prefixing rule
             return parse_prefixing_rule(line.left,line.right)
+    elif line.verb == ["is","synonym"]:
+        if parse_standard_rule_helper(line,[0],[0],[1]):
+            # it's a inserting rule
+            return parse_inserting_rule(line.left,line.right)
     raise Exception("Parser Error: Unable to parse standard rule")
