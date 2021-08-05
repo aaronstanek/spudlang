@@ -226,4 +226,52 @@ def parse_standard_ingredient(line):
             if prop_tuple[1] == False:
                 raise Exception("Parser Error: Prop removal in ingredient declaration is forbidden.")
             props.add(prop_tuple[0])
-    return Ingredient(count,unit,name,props)
+    return [Ingredient(count,unit,name,props)]
+
+def parse_hold(left):
+    # left is a valid noun sequence
+    return list(map(
+        lambda left_noun: Rule.HoldRule(parse_pattern(left_noun),0),
+        left))
+
+def parse_holdunit(left):
+    # left is a valid noun sequence
+    return list(map(
+        lambda left_noun: Rule.HoldRule(parse_pattern(left_noun),4),
+        left))
+
+def parse_dec(left):
+    # left is a valid noun sequence
+    return list(map(
+        lambda left_noun: Rule.Rule(
+            parse_pattern(left_noun),
+            RuleOutput.DecRuleOutputInstance
+            ),
+        left))
+
+def parse_frac(left):
+    # left is a valid noun sequence
+    return list(map(
+        lambda left_noun: Rule.Rule(
+            parse_pattern(left_noun),
+            RuleOutput.FracRuleOutputInstance
+            ),
+        left))
+
+def parse_at_command(line):
+    # we know that line is an AtCommandLexer object
+    # it must have a defined verb
+    if line.verb == ["@hold"]:
+        return parse_hold(line)
+    elif line.verb == ["@holdunit"]:
+        return parse_holdunit(line)
+    elif line.verb == ["@dec"]:
+        return parse_dec(line)
+    elif line.verb == ["@frac"]:
+        return parse_frac(line)
+    elif line.verb == ["@begin","multiply"]:
+        return []
+    elif line.verb == ["@end"]:
+        return []
+    else:
+        raise Exception("Internal Error")
