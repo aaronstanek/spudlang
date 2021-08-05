@@ -80,6 +80,7 @@ class RuleBox(object):
             match_token = rule.matches(ig)
             if (match_token[0] != 0):
                 best = rule
+                best_index = i
                 best_match_token = match_token
         return best, best_index, best_match_token
     def resolve(self,output_array,ig,mask=set()):
