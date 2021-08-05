@@ -72,8 +72,8 @@ def parse_renaming_rule(left,right):
     right_outputs = list(map(
         lambda right_noun: parse_properties_edit(
             RuleOutput.RenamingRuleOutput(right_noun.name.noun_core),
-                right_noun.sequence),
-        right))
+                right_noun),
+        right.sequence))
     # list of RenamingRuleOutput
     # or PropertiesRuleOutput
     return list(map(
