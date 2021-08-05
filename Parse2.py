@@ -80,6 +80,23 @@ def parse_renaming_rule(left,right):
         left
     ))
 
+def parse_prefixing_rule(left,right):
+    # left and right are NounSequenceLexer objects
+    # they have the correct format (SinglePattern)
+    # no wildcards
+    # returns a list of Rule objects
+    right_outputs = list(map(
+        lambda right_noun: parse_properties_edit(
+            RuleOutput.PrefixingRuleOutput(right_noun.name.noun_core),
+            right_noun),
+        right))
+    # list of RenamingRuleOutput
+    # or PropertiesRuleOutput
+    return list(map(
+        lambda left_noun: Rule.Rule(parse_pattern(left_noun),right_outputs),
+        left
+    ))
+
 def parse_single_conversion(left,right):
     # left and right are NounSequenceLexer objects
     # they have the correct format (SinglePattern)
@@ -155,4 +172,8 @@ def parse_standard_rule(line):
         if parse_standard_rule_helper(line,[1,2],[1,2],[1,2]):
             # it's a double converting rule
             return parse_double_conversion(line)
+    elif line.verb == ["is","type"]:
+        if parse_standard_rule_helper(line,[0],[0],[1]):
+            # it's a prefixing rule
+            return parse_prefixing_rule(line)
     raise Exception("Parser Error: Unable to parse standard rule")
