@@ -97,6 +97,9 @@ def parse_prefixing_rule(left,right):
         left
     ))
 
+def parse_insertion_rule(left,right):
+
+
 def parse_single_conversion(left,right):
     # left and right are NounSequenceLexer objects
     # they have the correct format (SinglePattern)
@@ -165,15 +168,15 @@ def parse_standard_rule(line):
     if line.verb == ["is"]:
         if parse_standard_rule_helper(line,[0],[0],[1]):
             # it's a renaming rule
-            return parse_renaming_rule(line)
+            return parse_renaming_rule(line.left,line.right)
         if parse_standard_rule_helper(line,[1],[0],[1]):
             # it's a single converting rule
-            return parse_single_conversion(line)
+            return parse_single_conversion(line.left,line.right)
         if parse_standard_rule_helper(line,[1,2],[1,2],[1,2]):
             # it's a double converting rule
-            return parse_double_conversion(line)
+            return parse_double_conversion(line.left,line.right)
     elif line.verb == ["is","type"]:
         if parse_standard_rule_helper(line,[0],[0],[1]):
             # it's a prefixing rule
-            return parse_prefixing_rule(line)
+            return parse_prefixing_rule(line.left,line.right)
     raise Exception("Parser Error: Unable to parse standard rule")
