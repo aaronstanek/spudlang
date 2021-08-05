@@ -123,7 +123,7 @@ def parse_inserting_rule(left,right):
             lambda right_noun: RuleOutput.InsertingRuleOutput(
                 pattern_size,right_noun.name.noun_core),
             right.sequence))
-        rules.append(Rule.Rule(parse_pattern(left.noun),right_outputs))
+        rules.append(Rule.Rule(parse_pattern(left_noun),right_outputs))
     return rules
 
 def parse_single_conversion(left,right):
