@@ -293,6 +293,15 @@ class NounLexer(object):
         # to continue
         index, noun_core_1 = NounCoreLexer.lex(line,index)
         if noun_core_1 is None:
+            if output.count is not None:
+                if output.count.wildcard:
+                    # we have a wildcard
+                    # which was originally interpreted as
+                    # a number
+                    # but it should actually be the core
+                    output.count = None
+                    noun_core_1 = NounCoreLexer(None)
+        if noun_core_1 is None:
             # this cannot be a noun of any kind
             # but it might be something else
             return fallback_index, None
