@@ -68,7 +68,10 @@ def main():
     # but some of the lists may be
     lines = list(map(Lex2.lex, lines))
     Parse2.resolve_begin_end(lines)
-    print(lines)
+    ingredients, rules = Parse2.parse_all_lines(lines)
+    del lines
+    print(ingredients)
+    print(rules)
 
 if __name__ == "__main__":
     main()

@@ -201,32 +201,36 @@ def parse_standard_rule(line):
 def parse_standard_ingredient(line):
     # line is a StandardLineLexer
     # we know that verb is None
-    if line.count is None:
-        if line.unit is None:
-            count = MyNumber((1,1))
-            unit = ["mealsworth"]
-        elif line.unit.wildcard:
+    # we know that left is defined
+    output = []
+    for noun in line.left.sequence:
+        if noun.count is None:
+            if noun.unit is None:
+                count = MyNumber((1,1))
+                unit = ["mealsworth"]
+            elif noun.unit.wildcard:
+                raise Exception("Parser Error: Wildcards forbidden in ingredient declaration.")
+            else:
+                raise Exception("Parser Error: Unit without quantity is forbidden in ingredient declaration")
+        elif noun.count.wildcard:
             raise Exception("Parser Error: Wildcards forbidden in ingredient declaration.")
         else:
-            raise Exception("Parser Error: Unit without quantity is forbidden in ingredient declaration")
-    elif line.count.wildcard:
-        raise Exception("Parser Error: Wildcards forbidden in ingredient declaration.")
-    else:
-        count = line.count.number
-        if line.unit is None:
-            unit = ["count"]
-        elif line.unit.wildcard:
-            raise Exception("Parser Error: Wildcards forbidden in ingredient declaration.")
-        else:
-            unit = line.unit.noun_core
-    name = line.name.noun_core
-    props = set()
-    if line.props is not None:
-        for prop_tuple in line.props.props:
-            if prop_tuple[1] == False:
-                raise Exception("Parser Error: Prop removal in ingredient declaration is forbidden.")
-            props.add(prop_tuple[0])
-    return [Ingredient(count,unit,name,props)]
+            count = noun.count.number
+            if noun.unit is None:
+                unit = ["count"]
+            elif noun.unit.wildcard:
+                raise Exception("Parser Error: Wildcards forbidden in ingredient declaration.")
+            else:
+                unit = noun.unit.noun_core
+        name = noun.name.noun_core
+        props = set()
+        if noun.props is not None:
+            for prop_tuple in noun.props.props:
+                if prop_tuple[1] == False:
+                    raise Exception("Parser Error: Prop removal in ingredient declaration is forbidden.")
+                props.add(prop_tuple[0])
+        output.append(Ingredient(count,unit,name,props))
+    return output
 
 def parse_hold(left):
     # left is a valid noun sequence
