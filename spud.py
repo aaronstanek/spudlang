@@ -4,8 +4,8 @@ import sys
 import os
 import hashlib
 import PreLex
-import Lex2
-import Parse2
+import Lex
+import Parse
 
 def load_file_raw(path):
     if path[-5:] != ".spud":
@@ -66,9 +66,9 @@ def main():
     # lines is now a list of lists of strings
     # none of the strings are empty
     # but some of the lists may be
-    lines = list(map(Lex2.lex, lines))
-    Parse2.resolve_begin_end(lines)
-    ingredients, rules = Parse2.parse_all_lines(lines)
+    lines = list(map(Lex.lex, lines))
+    Parse.resolve_begin_end(lines)
+    ingredients, rules = Parse.parse_all_lines(lines)
     del lines
     print("ingredients")
     for ingredient in ingredients:

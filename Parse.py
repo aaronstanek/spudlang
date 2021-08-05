@@ -2,7 +2,7 @@
 
 from Ingredient import Ingredient
 from MyNumber import MyNumber
-from Lex2 import StandardLineLexer, AtCommandLexer
+from Lex import StandardLineLexer, AtCommandLexer
 import Pattern
 import RuleOutput
 import Rule
