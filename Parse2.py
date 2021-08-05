@@ -275,3 +275,38 @@ def parse_at_command(line):
         return []
     else:
         raise Exception("Internal Error")
+
+def parse_line(line):
+    # line is a StandardLineLexer object
+    # of a AtCommandLexer
+    # all this function does is to direct
+    # the line to the appropriate parser
+    # returns an array of Rule
+    # or an array of Ingredient
+    if isinstance(line,StandardLineLexer):
+        if line.verb is None:
+            return parse_standard_ingredient(line)
+        else:
+            return parse_standard_rule(line)
+    elif isinstance(line,AtCommandLexer):
+        return parse_at_command(line)
+    else:
+        raise Exception("Internal Error")
+
+def parse_all_lines(lines):
+    # lines is a list of StandardLineLexer objects
+    # and AtCommandLexer objects
+    # returns ingredients array
+    # and rules array
+    ingredients = []
+    rules = []
+    for line in lines:
+        results = parse_line(line)
+        for result in results:
+            if isinstance(result,Ingredient):
+                ingredients.append(result)
+            elif isinstance(result,Rule.Rule):
+                rules.append(result)
+            else:
+                raise Exception("Internal Error")
+    return ingredients, rules
