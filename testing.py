@@ -526,7 +526,7 @@ class TestRule(unittest.TestCase):
         ))
         # do it
         output_array = []
-        box.resolve(output_array,A,set())
+        box.resolve(output_array,A,dict())
         self.assertEqual(len(output_array),1)
         r = output_array[0]
         self.assertEqual(type(r),Ingredient)
