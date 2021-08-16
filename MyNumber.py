@@ -80,6 +80,7 @@ class MyNumber(object):
         left = (0,1)
         right = (1,1)
         prev_best = left
+        prev_best_distance = 2.0
         while True:
             now = (
                 left[0] + right[0],
@@ -94,10 +95,11 @@ class MyNumber(object):
                     return MyNumber(
                         (prev_best[0]+whole*prev_best[1],prev_best[1])
                     )
-            else:
-                prev_best = now
             # now[1] is too small
             f = float(now[0]) / float(now[1])
+            if abs(f-part) < prev_best_distance:
+                prev_best = now
+                prev_best_distance = abs(f-part)
             if f == part:
                     return MyNumber(
                         (now[0]+whole*now[1],now[1])
