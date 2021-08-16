@@ -94,6 +94,8 @@ class MyNumber(object):
                     return MyNumber(
                         (prev_best[0]+whole*prev_best[1],prev_best[1])
                     )
+            else:
+                prev_best = now
             # now[1] is too small
             f = float(now[0]) / float(now[1])
             if f == part:
