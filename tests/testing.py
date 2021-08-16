@@ -1,4 +1,6 @@
 import unittest
+import sys
+sys.path.append("../src/spudlang")
 
 from MyNumber import MyNumber
 from Ingredient import Ingredient
