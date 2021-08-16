@@ -52,6 +52,8 @@ class TestMyNumber(unittest.TestCase):
         a = MyNumber((85,64))
         self.assertEqual(a.as_fraction(64).value,(85,64))
         self.assertEqual(a.as_fraction(500).value,(85,64))
+        a = MyNumber(1.6666666666)
+        self.assertEqual(a.as_fraction(10).value,(5,3))
     
     def test_addition_fractions(self):
         a = MyNumber((13,9))
