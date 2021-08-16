@@ -61,8 +61,8 @@ class RuleBox(object):
                 raise TypeError("Expected Rule")
     def _search(self,ig,mask):
         # if is Ingredient
-        # mask is a set of ints
-        # the indicies of which will be ignored
+        # mask is dict(int->str)
+        # the keys indicate which indicies to not check
         best = None
         best_index = None
         best_match_token = None
@@ -85,7 +85,7 @@ class RuleBox(object):
         return best, best_index, best_match_token
     def resolve(self,output_array,ig,mask=None):
         if mask is None:
-            mask = set()
+            mask = dict()
         if type(output_array) != list:
             raise TypeError("Expected list")
         if not isinstance(ig,Ingredient):
@@ -97,12 +97,26 @@ class RuleBox(object):
                 output_array.append(ig)
                 return
             results = rule.apply(ig,match_token)
-            mask.add(index)
             if len(results) == 1:
-                ig = results[0]
+                if results[0] is ig:
+                    # we did not change ig
+                    # we did not apply a rule
+                    mask[index] = "skip"
+                else:
+                    mask[index] = "applied"
+                    ig = results[0]
+                    for key in list(filter(lambda key: mask[key] == "skip", mask)):
+                        del mask[key]
             else:
                 for result in results:
-                    self.resolve(output_array,result,mask=copy(mask))
+                    submask = copy(mask)
+                    if result is ig:
+                        # we did not change ig
+                        # we did not apply a rule
+                        submask[index] = "skip"
+                    else:
+                        submask[index] = "applied"
+                    self.resolve(output_array,result,mask=submask)
                 return
     def resolve_to_html_document(self,ig_array):
         if type(ig_array) != list:
