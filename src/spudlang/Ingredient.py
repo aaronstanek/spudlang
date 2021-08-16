@@ -1,8 +1,8 @@
 # this file defines the Ingredient class
 # it can represent an item, its quantities
 
-from MyNumber import MyNumber
-from FormatCheck import listOfStrings, setOfStrings
+from .MyNumber import MyNumber
+from .FormatCheck import listOfStrings, setOfStrings
 from copy import copy
 
 class Ingredient(object):

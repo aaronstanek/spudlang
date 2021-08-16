@@ -2,7 +2,7 @@
 # used for storing the output of the program
 # and for saving the results as an html document
 
-from Ingredient import Ingredient
+from .Ingredient import Ingredient
 
 class ResultsTree(object):
     def __init__(self):

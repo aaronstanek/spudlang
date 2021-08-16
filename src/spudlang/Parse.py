@@ -1,11 +1,11 @@
 # second attempt at writing a parser
 
-from Ingredient import Ingredient
-from MyNumber import MyNumber
-from Lex import StandardLineLexer, AtCommandLexer
-import Pattern
-import RuleOutput
-import Rule
+from .Ingredient import Ingredient
+from .MyNumber import MyNumber
+from .Lex import StandardLineLexer, AtCommandLexer
+from . import Pattern
+from . import RuleOutput
+from . import Rule
 
 def resolve_begin_end(lines):
     # lines is a list of lex result objects

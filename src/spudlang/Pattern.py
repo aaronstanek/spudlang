@@ -7,8 +7,8 @@
 # x is index of the match in the sample
 # DoublePattern checks for a match in both the unit and name
 
-from FormatCheck import listOfStrings, dictStrBool
-from Ingredient import Ingredient
+from .FormatCheck import listOfStrings, dictStrBool
+from .Ingredient import Ingredient
 
 class Pattern(object):
     def __init__(self):

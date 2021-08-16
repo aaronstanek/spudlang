@@ -1,18 +1,18 @@
 import unittest
 import sys
-sys.path.append("../src/spudlang")
+sys.path.append("../src")
 
-from MyNumber import MyNumber
-from Ingredient import Ingredient
-from Pattern import Pattern, SinglePattern, DoublePattern
-from RuleOutput import (
+from spudlang.MyNumber import MyNumber
+from spudlang.Ingredient import Ingredient
+from spudlang.Pattern import Pattern, SinglePattern, DoublePattern
+from spudlang.RuleOutput import (
     NoneRuleOutputInstance, RenamingRuleOutput,
     PrefixingRuleOutput, InsertingRuleOutput,
     SingleConvertingRuleOutput, DoubleConvertingRuleOutput,
     PropertiesRuleOutput,
     DecRuleOutputInstance, FracRuleOutputInstance
     )
-from Rule import Rule, HoldRule, RuleBox
+from spudlang.Rule import Rule, HoldRule, RuleBox
 
 class TestMyNumber(unittest.TestCase):
 

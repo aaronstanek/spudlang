@@ -1,8 +1,8 @@
 import sys
-sys.path.append("../src/spudlang")
-from ResultsTree import ResultsTree
-from Ingredient import Ingredient
-from MyNumber import MyNumber
+sys.path.append("../src")
+from spudlang.ResultsTree import ResultsTree
+from spudlang.Ingredient import Ingredient
+from spudlang.MyNumber import MyNumber
 
 tree = ResultsTree()
 

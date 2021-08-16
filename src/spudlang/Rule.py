@@ -6,10 +6,10 @@
 # defines RuleBox to contain instances
 # of Rule
 
-from Ingredient import Ingredient
-from RuleOutput import RuleOutput, NoneRuleOutputInstance
-from Pattern import Pattern
-from ResultsTree import ResultsTree
+from .Ingredient import Ingredient
+from .RuleOutput import RuleOutput, NoneRuleOutputInstance
+from .Pattern import Pattern
+from .ResultsTree import ResultsTree
 
 from copy import copy
 

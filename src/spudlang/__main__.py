@@ -3,10 +3,10 @@
 import sys
 import os
 import hashlib
-import PreLex
-import Lex
-import Parse
-import Rule
+from . import PreLex
+from . import Lex
+from . import Parse
+from . import Rule
 
 def load_file_raw(path):
     if path[-5:] != ".spud":

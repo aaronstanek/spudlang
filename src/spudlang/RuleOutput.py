@@ -2,9 +2,9 @@
 # and its subclasses
 # these perform singular operators on Ingredient objects
 
-from MyNumber import MyNumber
-from Ingredient import Ingredient
-from FormatCheck import listOfStrings, listOfTupleStringBools
+from .MyNumber import MyNumber
+from .Ingredient import Ingredient
+from .FormatCheck import listOfStrings, listOfTupleStringBools
 
 class RuleOutput(object):
     def __init__(self):

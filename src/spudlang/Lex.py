@@ -2,7 +2,7 @@
 # use objects to hold lex results
 # in place of dicts
 
-from MyNumber import MyNumber
+from .MyNumber import MyNumber
 
 class NumberLexer(object):
     def __init__(self,number):
