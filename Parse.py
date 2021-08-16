@@ -269,18 +269,18 @@ def parse_dec(left):
     return list(map(
         lambda left_noun: Rule.Rule(
             parse_pattern(left_noun),
-            RuleOutput.DecRuleOutputInstance
+            [RuleOutput.DecRuleOutputInstance]
             ),
-        left.sequence))
+        left.left.sequence))
 
 def parse_frac(left):
     # left is a valid noun sequence
     return list(map(
         lambda left_noun: Rule.Rule(
             parse_pattern(left_noun),
-            RuleOutput.FracRuleOutputInstance
+            [RuleOutput.FracRuleOutputInstance]
             ),
-        left.sequence))
+        left.left.sequence))
 
 def parse_at_command(line):
     # we know that line is an AtCommandLexer object
