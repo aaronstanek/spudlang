@@ -120,8 +120,10 @@ def parse_inserting_rule(left,right):
     for left_noun in left.sequence:
         pattern_size = len(left_noun.name.noun_core)
         right_outputs = list(map(
-            lambda right_noun: RuleOutput.InsertingRuleOutput(
-                pattern_size,right_noun.name.noun_core),
+            lambda right_noun: parse_properties_edit(
+                RuleOutput.InsertingRuleOutput(
+                    pattern_size,right_noun.name.noun_core),
+                right_noun),
             right.sequence))
         rules.append(Rule.Rule(parse_pattern(left_noun),right_outputs))
     return rules
@@ -136,10 +138,11 @@ def parse_single_conversion(left,right):
         right_outputs = []
         for right_noun in right.sequence:
             ratio = left_noun.count.number.multiplicative_inverse() * right_noun.count.number
-            right_outputs.append(RuleOutput.SingleConvertingRuleOutput(
+            right_outputs.append( parse_properties_edit(
+                RuleOutput.SingleConvertingRuleOutput(
                 ratio,
                 right_noun.name.noun_core
-            ))
+            ),right_noun))
         rules.append(
             Rule.Rule(
                 parse_pattern(left_noun),
@@ -161,11 +164,12 @@ def parse_double_conversion(left,right):
                 ratio = MyNumber((1,1))
             else:
                 ratio = left_noun.count.number.multiplicative_inverse() * right_noun.count.number
-            right_outputs.append(RuleOutput.DoubleConvertingRuleOutput(
+            right_outputs.append(parse_properties_edit(
+                RuleOutput.DoubleConvertingRuleOutput(
                 ratio,
                 right_noun.unit.noun_core,
                 right_noun.name.noun_core
-            ))
+            ),right_noun))
         rules.append(
             Rule.Rule(
                 parse_pattern(left_noun),
