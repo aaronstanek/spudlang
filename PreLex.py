@@ -89,6 +89,7 @@ canonical_letters = {
     "-": " - ",
     # some characters are not
     " ": " ",
+    "/": "/",
     "@": "@",
     ".": ".",
     "_": "_"
