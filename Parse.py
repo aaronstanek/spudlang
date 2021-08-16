@@ -256,13 +256,13 @@ def parse_hold(left):
     # left is a valid noun sequence
     return list(map(
         lambda left_noun: Rule.HoldRule(parse_pattern(left_noun),0),
-        left.sequence))
+        left.left.sequence))
 
 def parse_holdunit(left):
     # left is a valid noun sequence
     return list(map(
         lambda left_noun: Rule.HoldRule(parse_pattern(left_noun),4),
-        left.sequence))
+        left.left.sequence))
 
 def parse_dec(left):
     # left is a valid noun sequence
