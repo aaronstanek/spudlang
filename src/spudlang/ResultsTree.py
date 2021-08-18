@@ -34,11 +34,7 @@ class ResultsTree(object):
             self.terms.append(ig)
         else:
             # we will put it in the subtrees
-            if ig.name[0][0] == "_":
-                # we need to ignore this level
-                # of processing
-                st = self
-            elif ig.name[0] in self.subtrees:
+            if ig.name[0] in self.subtrees:
                 # we can hand it off to the subtree for processing
                 st = self.subtrees[ig.name[0]]
             else:
@@ -61,15 +57,13 @@ class ResultsTree(object):
             output.append("<li>")
             output.append(str(term.count))
             for unit in term.unit:
-                if unit[0] != "_":
-                    output.append(" ")
-                    output.append(unit)
+                output.append(" ")
+                output.append(unit)
             props = list(term.props)
             props.sort()
             for prop in props:
-                if prop[0] != "_":
-                    output.append(" ")
-                    output.append(prop)
+                output.append(" ")
+                output.append(prop)
             output.append("</li>")
         subtree_names = list(self.subtrees)
         subtree_names.sort()
