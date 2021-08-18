@@ -21,3 +21,9 @@ class Ingredient(object):
             self.count,self.unit[:],
             self.name[:],copy(self.props)
             )
+    def strip(self):
+        # remove all terms starting with _
+        unit = list(filter(lambda x: x[0] != "_", self.unit))
+        name = list(filter(lambda x: x[0] != "_", self.name))
+        props = set(filter(lambda x: x[0] != "_", self.props))
+        return Ingredient(self.count,unit,name,props)

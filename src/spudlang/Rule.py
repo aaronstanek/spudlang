@@ -128,5 +128,5 @@ class RuleBox(object):
             output_array = []
             self.resolve(output_array,ig)
             for output_ig in output_array:
-                tree.add_ingredient(output_ig)
+                tree.add_ingredient(output_ig.strip())
         return tree.as_html_document()
