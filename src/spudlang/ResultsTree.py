@@ -9,6 +9,8 @@ class ResultsTree(object):
         self.terms = []
         self.subtrees = {}
     def add_ingredient(self,ig):
+        if ig is None:
+            return
         if not isinstance(ig,Ingredient):
             raise TypeError("Expected ingredient")
         put_in_terms = False

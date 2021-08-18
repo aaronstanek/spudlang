@@ -25,5 +25,7 @@ class Ingredient(object):
         # remove all terms starting with _
         unit = list(filter(lambda x: x[0] != "_", self.unit))
         name = list(filter(lambda x: x[0] != "_", self.name))
+        if len(unit) == 0 or len(name) == 0:
+            return None
         props = set(filter(lambda x: x[0] != "_", self.props))
         return Ingredient(self.count,unit,name,props)
