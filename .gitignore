@@ -1,5 +1,7 @@
 __pycache__/
 dist/
 src/spudlang.egg-info/
+grammar/*
+!grammar/Spud.g4
 program/
 *.html
