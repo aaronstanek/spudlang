@@ -16,19 +16,13 @@ fragment Nonzero : [1-9] ;
 fragment Numeral : Zero | Nonzero ;
 fragment Nonzerostring : Zero* Nonzero Numeral* ;
 
-fragment Decimallarge : Nonzerostring '.' Numeral* ;
-fragment Decimalsmall : Zero* '.' Nonzerostring ;
-fragment Decimal : Decimallarge | Decimalsmall ;
-
-fragment FractionSimple : Nonzerostring Inlinewhitespace* '/' Inlinewhitespace* Nonzerostring ;
-fragment FractionComplex : Nonzerostring Inlinewhitespace+ FractionSimple ;
-fragment Fraction : FractionSimple | FractionComplex ;
-
 // define tokens
 
 Inlinewhitespacetoken : Inlinewhitespace ;
 Returnwhitespacetoken : Returnwhitespace ;
-Number : Nonzerostring | Decimal | Fraction ;
+Zerotoken : Zero ;
+Numeraltoken : Numeral ;
+Nonzerostringtoken : Nonzerostring ;
 Namesegment : '_'? Alpha ('_'? (Alpha | Numeral))* ;
 
 And : Inlinewhitespace* '&' Inlinewhitespace* ;
@@ -46,6 +40,16 @@ Catchall : (' '..'~') | '\t' ;
 
 // parser rules
 
+decimallarge : Nonzerostringtoken '.' Numeraltoken* ;
+decimalsmall : Zerotoken* '.' Nonzerostringtoken ;
+decimal : decimallarge | decimalsmall ;
+
+fractionsimple : Nonzerostringtoken Inlinewhitespacetoken* '/' Inlinewhitespacetoken* Nonzerostringtoken ;
+fractioncomplex : Nonzerostringtoken Inlinewhitespacetoken+ fractionsimple ;
+fraction : fractionsimple | fractioncomplex ;
+
+number : Nonzerostringtoken | decimal | fraction ;
+
 onelinecomment : ('#'|'//') (~Returnwhitespacetoken)* ;
 multilinecomment : '/*' (~'*/')* '*/' ;
 linebreak : Returnwhitespacetoken | multilinecomment ;
@@ -59,7 +63,7 @@ propswild : (propselem|propswildelem)* ;
 
 basicname : Namesegment ( '.' Namesegment )* ;
 basicnameplusprops : basicname propsplus ;
-lineingredient : (Number Inlinewhitespacetoken+ (basicname Inlinewhitespacetoken+)? )? basicnameplusprops ;
+lineingredient : (number Inlinewhitespacetoken+ (basicname Inlinewhitespacetoken+)? )? basicnameplusprops ;
 
 powname : '!'? basicname '!'? ;
 
@@ -78,16 +82,16 @@ linerenaming : ruleleftsimple Is rulerightsimplewild ;
 lineprefixing : ruleleftsimple Istype rulerightsimplewild ;
 lineinserting : ruleleftsimple Issynonym rulerightsimple ;
 
-singleconvertingleftelem : Number Inlinewhitespacetoken+ pownamewithprops ;
-singleconvertingrightelem : (Number|'$') Inlinewhitespacetoken+ basicwildwithprops ;
+singleconvertingleftelem : number Inlinewhitespacetoken+ pownamewithprops ;
+singleconvertingrightelem : (number|'$') Inlinewhitespacetoken+ basicwildwithprops ;
 singleconvertingleft : singleconvertingleftelem (And singleconvertingleftelem)* ;
 singleconvertingright : singleconvertingrightelem (And singleconvertingrightelem)* ;
 linesingleconverting : singleconvertingleft Is singleconvertingright ;
 
 doubleconvertingleftsub1 : '$' Inlinewhitespacetoken+ pownamewithprops ;
 doubleconvertingleftsub2 : powname Inlinewhitespacetoken+ powwildwithprops ;
-doubleconvertingleftelem : Number Inlinewhitespacetoken+ (doubleconvertingleftsub1 | doubleconvertingleftsub2) ;
-doubleconvertingrightelem : (Number|'$') Inlinewhitespacetoken+ (basicname|'$') Inlinewhitespacetoken+ basicwildwithprops ;
+doubleconvertingleftelem : number Inlinewhitespacetoken+ (doubleconvertingleftsub1 | doubleconvertingleftsub2) ;
+doubleconvertingrightelem : (number|'$') Inlinewhitespacetoken+ (basicname|'$') Inlinewhitespacetoken+ basicwildwithprops ;
 doubleconvertingleft : doubleconvertingleftelem (And doubleconvertingleftelem)* ;
 doubleconvertingright : doubleconvertingrightelem (And doubleconvertingrightelem)* ;
 linedoubleconverting : doubleconvertingleft Is doubleconvertingright ;
@@ -107,7 +111,7 @@ atdec : '@dec' atsub ;
 atfrac : '@frac' atsub ;
 
 atbegin : '@begin' Inlinewhitespacetoken+
-    'multiply' Inlinewhitespacetoken+ Number
+    'multiply' Inlinewhitespacetoken+ number
     Inlinewhitespacetoken* onelinecomment? ;
 atend : Inlinewhitespacetoken* '@end' ;
 atsection : atbegin linebreak (line linebreak)* atend ;
