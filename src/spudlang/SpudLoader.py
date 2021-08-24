@@ -10,6 +10,7 @@ from .SpudLexer import SpudLexer
 from .SpudParser import SpudParser
 
 from .MyNumber import MyNumber
+from .Ingredient import Ingredient
 
 class MyErrorListener(ErrorListener):
     # from https://stackoverflow.com/questions/32224980/python-2-7-antlr4-make-antlr-throw-exceptions-on-invalid-input
@@ -115,18 +116,90 @@ class SpudLoader(object):
         # tree is SpudParser.Propspluselem
         # or SpudParser.Propselem
         # or SpudParser.Propswildelem
-        raise NotImplemented
+        for child in tree.children:
+            # all terminal nodes
+            text = child.getText()
+            if child.getSymbol().type == SpudParser.Namesegment:
+                return (sign,text)
+            elif text == "$":
+                return (sign,text)
+            elif text == "+":
+                sign = True
+            elif text == "-":
+                sign = False
     def _handle_all_props(self,tree,context):
         # tree is SpudParser.Propsplus
         # or SpudParser.Props
         # or SpudParser.Propswild
-        raise NotImplemented
+        if tree.children is None:
+            return []
+        props = []
+        for child in tree.children:
+            props.append(self._handle_all_prop_elements)
+        return props
     def _handle_all_names(self,tree,context):
         # tree is SpudParser.Basicname
         # or SpudParser.Powname
-        raise NotImplemented
+        name = []
+        if isinstance(tree,SpudParser.PownameContext):
+            for child in tree.children:
+                if isinstance(child,antlr4.tree.Tree.TerminalNodeImpl):
+                    # this can only be !
+                    name.append("!")
+                else:
+                    # this can only be SpudParser.Basicname
+                    name += self._handle_all_names(child,context)
+        else:
+            # all children are terminal nodes
+            for child in tree.children:
+                if child.getSymbol().type == SpudParser.Namesegment:
+                    name.append(child.getText())
+        return name
+    def _handle_name_and_props(self,tree,context):
+        # tree is:
+        # SpudParser.Basicnameplusprops
+        # SpudParser.Pownamewithprops
+        # SpudParser.Wildcardwithprops
+        # SpudParser.Basicnamewithpropswild
+        # SpudParser.Wildcardwithpropswild
+        # SpudParser.Powwildwithprops
+        # SpudParser.Basicwildwithprops
+        if isinstance(tree,(SpudParser.PowwildwithpropsContext,SpudParser.BasicwildwithpropsContext)):
+            return self._handle_name_and_props(tree.children[0])
+        if isinstance(tree.children[0],antlr4.tree.Tree.TerminalNodeImpl):
+            # can only be $
+            name = None
+        else:
+            name = self._handle_all_names(tree.children[0],context)
+        props = self._handle_all_props(tree.children[1],context)
+        return name, props
     def _handle_lineingredient(self,tree,context):
-        raise NotImplemented
+        # tree is SpudParser.Lineingredient
+        number = None
+        unit = None
+        for child in tree.children:
+            if isinstance(child,SpudParser.NumberContext):
+                number = MyNumber.from_tree(child)
+            elif isinstance(child,SpudParser.BasicnameContext):
+                # units
+                unit = self._handle_all_names(child,context)
+            elif isinstance(child,SpudParser.BasicnamepluspropsContext):
+                # name and props
+                name, props_raw = self._handle_name_and_props(child,context)
+                props = set()
+                for prop in props_raw:
+                    props.add(prop[0])
+        if number is None:
+            # unit is also None
+            number = MyNumber((1,0))
+            unit = ["mealsworth"]
+        elif unit is None:
+            # unit is None
+            # but number is defined
+            unit = ["count"]
+        if "multiply" in context:
+            number = number * context["multiply"]
+        self.ingredients.append( Ingredient(number,unit,name,props) )
     def _handle_linestandardrule(self,tree,context):
         raise NotImplemented
     def _handle_atsub1(self,tree,context):
