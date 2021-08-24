@@ -111,9 +111,29 @@ class SpudLoader(object):
             else:
                 break
         return SpudLoader.convert_to_absolute_pathnames(base_dir,statement)
+    def _handle_all_prop_elements(self,tree,context):
+        # tree is SpudParser.Propspluselem
+        # or SpudParser.Propselem
+        # or SpudParser.Propswildelem
+        raise NotImplemented
+    def _handle_all_props(self,tree,context):
+        # tree is SpudParser.Propsplus
+        # or SpudParser.Props
+        # or SpudParser.Propswild
+        raise NotImplemented
+    def _handle_all_names(self,tree,context):
+        # tree is SpudParser.Basicname
+        # or SpudParser.Powname
+        raise NotImplemented
     def _handle_lineingredient(self,tree,context):
         raise NotImplemented
     def _handle_linestandardrule(self,tree,context):
+        raise NotImplemented
+    def _handle_atsub1(self,tree,context):
+        raise NotImplemented
+    def _handle_atsub2(self,tree,context):
+        raise NotImplemented
+    def _handle_atsub(self,tree,context):
         raise NotImplemented
     def _handle_athold(self,tree,context):
         raise NotImplemented
