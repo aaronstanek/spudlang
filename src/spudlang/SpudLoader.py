@@ -108,6 +108,59 @@ class SpudLoader(object):
             else:
                 break
         return SpudLoader.convert_to_absolute_pathnames(base_dir,statement)
+    def _handle_lineingredient(self,tree,context):
+        raise NotImplemented
+    def _handle_linestandardrule(self,tree,context):
+        raise NotImplemented
+    def _handle_athold(self,tree,context):
+        raise NotImplemented
+    def _handle_atholdunit(self,tree,context):
+        raise NotImplemented
+    def _handle_atdec(self,tree,context):
+        raise NotImplemented
+    def _handle_atfrac(self,tree,context):
+        raise NotImplemented
+    def _handle_atbegin(self,tree,context):
+        raise NotImplemented
+    def _handle_atsection(self,tree,context):
+        # tree is SpudParser.AtsectionContext
+        for child in tree.children:
+            # ignore atend
+            if isinstance(child,SpudParser.AtbeginContext):
+                context = self._handle_atbegin(child,context)
+            elif isinstance(child,SpudParser.LineContext):
+                self._handle_line(child,context)
+    def _handle_lineat(self,tree,context):
+        # tree is SpudParser.LineatContext
+        for child in tree.children:
+            if isinstance(child,SpudParser.AtholdContext):
+                self._handle_athold(child,context)
+            elif isinstance(child,SpudParser.AtholdunitContext):
+                self._handle_atholdunit(child,context)
+            elif isinstance(child,SpudParser.AtdecContext):
+                self._handle_atdec(child,context)
+            elif isinstance(child,SpudParser.AtfracContext):
+                self._handle_atfrac(child,context)
+            elif isinstance(child,SpudParser.AtsectionContext):
+                self._handle_atsection(child,context)
+    def _handle_line(self,tree,context):
+        # tree is a SpudParser.LineContext
+        if tree.children is None:
+            return
+        for child in tree.children:
+            if isinstance(child,SpudParser.LineingredientContext):
+                self._handle_lineingredient(child,context)
+            elif isinstance(child,SpudParser.LinestandardruleContext):
+                self._handle_linestandardrule(child,context)
+            elif isinstance(child,SpudParser.LineatContext):
+                self._handle_lineat(child,context)
+    def _handle_spud(self,tree):
+        # tree is a SpudParser.SpudContext
+        if tree.children is None:
+            return
+        for child in tree.children:
+            if isinstance(child,SpudParser.LineContext):
+                self._handle_line(child,{})
     def recursive_load_parse(self,abs_path):
         # abs_path is a string with the absolute file path to load
         tree = self.get_tree(abs_path)
@@ -115,9 +168,12 @@ class SpudLoader(object):
             return
         imports = []
         self.extract_imports(imports,tree)
-        print(imports)
         for statement in imports:
             self.recursive_load_parse(self.resolve_import_path(
                 os.path.dirname(abs_path),
                 statement
             ))
+        self._handle_spud(tree)
+
+x = SpudLoader()
+x.recursive_load_parse("../tests/test_dir/main.spud")
