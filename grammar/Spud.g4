@@ -13,17 +13,14 @@ fragment Alpha : Uppercase | Lowercase ;
 
 fragment Zero : '0' ;
 fragment Nonzero : [1-9] ;
-fragment Numeral : Zero | Nonzero ;
-fragment Nonzerostring : Zero* Nonzero Numeral* ;
 
 // define tokens
 
 Inlinewhitespacetoken : Inlinewhitespace ;
 Returnwhitespacetoken : Returnwhitespace ;
 Zerotoken : Zero ;
-Numeraltoken : Numeral ;
-Nonzerostringtoken : Nonzerostring ;
-Namesegment : '_'? Alpha ('_'? (Alpha | Numeral))* ;
+Nonzerotoken : Nonzero ;
+Namesegment : '_'? Alpha ('_'? (Alpha | Zero | Nonzero))* ;
 
 And : Inlinewhitespace* '&' Inlinewhitespace* ;
 Is : Inlinewhitespace+ ('is'|'are') Inlinewhitespace+ ;
@@ -40,15 +37,17 @@ Catchall : 'A' | (~'A');
 
 // parser rules
 
-decimallarge : Nonzerostringtoken '.' Numeraltoken* ;
-decimalsmall : Zerotoken* '.' Nonzerostringtoken ;
-decimal : decimallarge | decimalsmall ;
+nonzerostring : Zerotoken* Nonzerotoken (Zerotoken|Nonzerotoken)* ;
 
-fractionsimple : Nonzerostringtoken Inlinewhitespacetoken* '/' Inlinewhitespacetoken* Nonzerostringtoken ;
-fractioncomplex : Nonzerostringtoken Inlinewhitespacetoken+ fractionsimple ;
-fraction : fractionsimple | fractioncomplex ;
+decimallarge : nonzerostring '.' (Zerotoken|Nonzerotoken)* ;
+decimalsmall : Zerotoken* '.' nonzerostring ;
 
-number : Nonzerostringtoken | decimal | fraction ;
+fractionsimple : nonzerostring Inlinewhitespacetoken* '/' Inlinewhitespacetoken* nonzerostring ;
+fractioncomplex : nonzerostring Inlinewhitespacetoken+ fractionsimple ;
+
+number : nonzerostring
+    | decimallarge | decimalsmall
+    | fractionsimple | fractioncomplex ;
 
 onelinecomment : ('#'|'//') (~Returnwhitespacetoken)* ;
 multilinecomment : '/*' (~'*/')* '*/' ;
