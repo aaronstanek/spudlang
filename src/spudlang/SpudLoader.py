@@ -3,10 +3,13 @@
 
 import os
 import hashlib
+from copy import copy
 import antlr4
 from antlr4.error.ErrorListener import ErrorListener
 from .SpudLexer import SpudLexer
 from .SpudParser import SpudParser
+
+from .MyNumber import MyNumber
 
 class MyErrorListener(ErrorListener):
     # from https://stackoverflow.com/questions/32224980/python-2-7-antlr4-make-antlr-throw-exceptions-on-invalid-input
@@ -121,7 +124,17 @@ class SpudLoader(object):
     def _handle_atfrac(self,tree,context):
         raise NotImplemented
     def _handle_atbegin(self,tree,context):
-        raise NotImplemented
+        # tree is SpudParser.AtbeginContext
+        # return a new context with the correct value of multiply
+        for child in tree.children:
+            if isinstance(child,SpudParser.number):
+                value = MyNumber.from_tree(child)
+                new_context = copy.copy(value)
+                if "multiply" in new_context:
+                    value = new_context["multiply"] * value
+                new_context["multiply"] = value
+                return new_context
+        raise Exception("Internal Error")
     def _handle_atsection(self,tree,context):
         # tree is SpudParser.AtsectionContext
         for child in tree.children:
