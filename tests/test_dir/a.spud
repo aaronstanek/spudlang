@@ -3,6 +3,6 @@
 
 # ignore this line
 @import sub/hello_world
-/ ignore this line
+// ignore this line
 
 1 cup broth is 1 cup water & 1 tsp broth_mix
