@@ -4,6 +4,7 @@
 # then easily
 
 import math
+from .SpudParser import SpudParser
 
 class MyNumber(object):
     # has 2 member variables
@@ -251,3 +252,39 @@ class MyNumber(object):
             # (both reduced by gcd)
             return MyNumber((n_total,d))
         raise ValueError("String count not be converted to MyNumber")
+    @staticmethod
+    def _handle_fractionsimple(tree):
+        # tree is SpudParser.FractionsimpleContext
+        a = None
+        for child in tree.children:
+            if isinstance(child,SpudParser.NonzerostringContext):
+                if a is None:
+                    a = int(child.getText())
+                else:
+                    b = int(child.getText())
+                    return (a,b)
+        raise Exception("Internal Error")
+    @staticmethod
+    def _handle_fractioncomplex(tree):
+        # tree is SpudParser.FractioncomplexContext
+        a = None
+        for child in tree.children:
+            if isinstance(child,SpudParser.NonzerostringContext):
+                a = int(child.getText())
+            elif isinstance(child,SpudParser.FractionsimpleContext):
+                b = MyNumber._handle_fractionsimple(child)
+                return (b[0]+a*b[1],b[1])
+        raise Exception("Internal Error")
+    @staticmethod
+    def from_tree(tree):
+        # tree is SpudParser.NumberContext
+        for child in tree.children:
+            if isinstance(child,SpudParser.NonzerostringContext):
+                return MyNumber((int(child.getText()),1))
+            if isinstance(child,(SpudParser.decimallarge,SpudParser.decimalsmall)):
+                return MyNumber(float(child.getText()))
+            if isinstance(child,SpudParser.FractionsimpleContext):
+                return MyNumber(MyNumber._handle_fractionsimple(child))
+            if isinstance(child,SpudParser.FractioncomplexContext):
+                return MyNumber(MyNumber._handle_fractioncomplex(child))
+        raise Exception("Internal Error")
