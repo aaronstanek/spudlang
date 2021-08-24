@@ -36,7 +36,7 @@ Issynonym : Inlinewhitespace+ ('is'|'are') Inlinewhitespace+
     'synonym' 's'? Inlinewhitespace+
     ('of' Inlinewhitespace+)? ;
 
-Catchall : (' '..'~') | '\t' ;
+Catchall : 'A' | (~'A');
 
 // parser rules
 
