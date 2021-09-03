@@ -203,6 +203,19 @@ class SpudLoader(object):
         if "multiply" in context:
             number = number * context["multiply"]
         self.ingredients.append( Ingredient(number,unit,name,props) )
+    def _handle_rule_side_simple(self,tree,context):
+        # tree is SpudParser.RuleleftsimpleContext
+        # or SpudParser.RulerightsimpleContext
+        # or SpudParser.Rulerightsimplewild
+        # returns list of (name,props) tuples
+        output = []
+        for child in tree.children:
+            if isinstance(child,(
+                    SpudParser.PownamewithpropsContext,
+                    SpudParser.BasicnamewithpropswildContext,
+                    SpudParser.BasicwildwithpropsContext)):
+                output.append(self._handle_name_and_props(child,context))
+        return output
     def _handle_linerenaming(self,tree,context):
         raise NotImplementedError()
     def _handle_lineprefixing(self,tree,context):
