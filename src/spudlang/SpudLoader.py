@@ -8,7 +8,9 @@ import antlr4
 from antlr4.error.ErrorListener import ErrorListener
 from .Pattern import SinglePattern, DoublePattern
 from .Rule import Rule, HoldRule
-from .RuleOutput import DecRuleOutputInstance, FracRuleOutputInstance, RenamingRuleOutput, PrefixingRuleOutput, PropertiesRuleOutput
+from .RuleOutput import (
+    RenamingRuleOutput, PrefixingRuleOutput, InsertingRuleOutput,
+    DecRuleOutputInstance, FracRuleOutputInstance, PropertiesRuleOutput)
 from .SpudLexer import SpudLexer
 from .SpudParser import SpudParser
 
@@ -233,7 +235,22 @@ class SpudLoader(object):
             pattern = SinglePattern(left[i][0],left[i][1])
             self.rules.append(Rule(pattern,right))
     def _handle_lineinserting(self,tree,context):
-        raise NotImplementedError()
+        # tree is SpudParser.LineinsertingContext
+        for child in tree.children:
+            if isinstance(child,SpudParser.RuleleftsimpleContext):
+                left = self._handle_rule_side_simple(child,context)
+            elif isinstance(child,SpudParser.RulerightsimpleContext):
+                right = self._handle_rule_side_simple(child,context)
+        for i in range(len(left)):
+            pattern = SinglePattern(left[i][0],left[i][1])
+            pattern_size = len(left[i][0])
+            outputs = []
+            for j in range(len(right)):
+                ro = InsertingRuleOutput(pattern_size,right[i][0])
+                if len(right[i][1]) != 0:
+                    ro = PropertiesRuleOutput(ro,right[i][1])
+                outputs.append(ro)
+            self.rules.append(Rule(pattern,outputs))
     def _handle_linesingleconverting(self,tree,context):
         raise NotImplementedError()
     def _handle_linedoubleconverting(self,tree,context):
