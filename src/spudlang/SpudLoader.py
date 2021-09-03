@@ -201,21 +201,21 @@ class SpudLoader(object):
             number = number * context["multiply"]
         self.ingredients.append( Ingredient(number,unit,name,props) )
     def _handle_linestandardrule(self,tree,context):
-        raise NotImplemented
+        raise NotImplementedError()
     def _handle_atsub1(self,tree,context):
-        raise NotImplemented
+        raise NotImplementedError()
     def _handle_atsub2(self,tree,context):
-        raise NotImplemented
+        raise NotImplementedError()
     def _handle_atsub(self,tree,context):
-        raise NotImplemented
+        raise NotImplementedError()
     def _handle_athold(self,tree,context):
-        raise NotImplemented
+        raise NotImplementedError()
     def _handle_atholdunit(self,tree,context):
-        raise NotImplemented
+        raise NotImplementedError()
     def _handle_atdec(self,tree,context):
-        raise NotImplemented
+        raise NotImplementedError()
     def _handle_atfrac(self,tree,context):
-        raise NotImplemented
+        raise NotImplementedError()
     def _handle_atbegin(self,tree,context):
         # tree is SpudParser.AtbeginContext
         # return a new context with the correct value of multiply
