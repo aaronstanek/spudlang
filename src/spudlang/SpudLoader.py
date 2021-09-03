@@ -6,7 +6,7 @@ import hashlib
 from copy import copy
 import antlr4
 from antlr4.error.ErrorListener import ErrorListener
-from .Rule import Rule
+from .Rule import Rule, HoldRule
 from .RuleOutput import DecRuleOutputInstance, FracRuleOutputInstance
 from .SpudLexer import SpudLexer
 from .SpudParser import SpudParser
@@ -211,17 +211,27 @@ class SpudLoader(object):
     def _handle_atsub(self,tree,context):
         raise NotImplementedError()
     def _handle_athold(self,tree,context):
-        raise NotImplementedError()
+        # tree is SpudParser.AtholdContext
+        for child in tree.children:
+            if isinstance(child,SpudParser.AtsubContext):
+                pattern = self._handle_atsub(child,context)
+                self.rules.append(HoldRule(pattern,0))
+                # holds have priority 0
     def _handle_atholdunit(self,tree,context):
-        raise NotImplementedError()
+        # tree is SpudParser.AtholdunitContext
+        for child in tree.children:
+            if isinstance(child,SpudParser.AtsubContext):
+                pattern = self._handle_atsub(child,context)
+                self.rules.append(HoldRule(pattern,4))
+                # holdunits have priority 4
     def _handle_atdec(self,tree,context):
-        # tree is SpudParser.Atdec
+        # tree is SpudParser.AtdecContext
         for child in tree.children:
             if isinstance(child,SpudParser.AtsubContext):
                 pattern = self._handle_atsub(child,context)
                 self.rules.append(Rule(pattern,[DecRuleOutputInstance]))
     def _handle_atfrac(self,tree,context):
-        # tree is SpudParser.Atfrac
+        # tree is SpudParser.AtfracContext
         for child in tree.children:
             if isinstance(child,SpudParser.AtsubContext):
                 pattern = self._handle_atsub(child,context)
