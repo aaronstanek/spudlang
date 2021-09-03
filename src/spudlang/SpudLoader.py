@@ -8,7 +8,7 @@ import antlr4
 from antlr4.error.ErrorListener import ErrorListener
 from .Pattern import SinglePattern, DoublePattern
 from .Rule import Rule, HoldRule
-from .RuleOutput import DecRuleOutputInstance, FracRuleOutputInstance
+from .RuleOutput import DecRuleOutputInstance, FracRuleOutputInstance, RenamingRuleOutput, PropertiesRuleOutput
 from .SpudLexer import SpudLexer
 from .SpudParser import SpudParser
 
@@ -217,7 +217,20 @@ class SpudLoader(object):
                 output.append(self._handle_name_and_props(child,context))
         return output
     def _handle_linerenaming(self,tree,context):
-        raise NotImplementedError()
+        # tree is SpudParser.LinerenamingContext
+        for child in tree.children:
+            if isinstance(child,SpudParser.RuleleftsimpleContext):
+                left = self._handle_rule_side_simple(child,context)
+            elif isinstance(child,SpudParser.RulerightsimplewildContext):
+                right = self._handle_rule_side_simple(child,context)
+        for i in range(len(right)):
+            ro = RenamingRuleOutput(right[i][0])
+            if len(right[i][1]) != 0:
+                ro = PropertiesRuleOutput(ro,right[i][1])
+            right[i] = ro
+        for i in range(len(left)):
+            pattern = SinglePattern(left[i][0],left[i][1])
+            self.rules.append(Rule(pattern,right))
     def _handle_lineprefixing(self,tree,context):
         raise NotImplementedError()
     def _handle_lineinserting(self,tree,context):
