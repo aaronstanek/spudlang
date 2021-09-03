@@ -6,6 +6,8 @@ import hashlib
 from copy import copy
 import antlr4
 from antlr4.error.ErrorListener import ErrorListener
+from .Rule import Rule
+from .RuleOutput import DecRuleOutputInstance, FracRuleOutputInstance
 from .SpudLexer import SpudLexer
 from .SpudParser import SpudParser
 
@@ -213,9 +215,17 @@ class SpudLoader(object):
     def _handle_atholdunit(self,tree,context):
         raise NotImplementedError()
     def _handle_atdec(self,tree,context):
-        raise NotImplementedError()
+        # tree is SpudParser.Atdec
+        for child in tree.children:
+            if isinstance(child,SpudParser.AtsubContext):
+                pattern = self._handle_atsub(child,context)
+                self.rules.append(Rule(pattern,[DecRuleOutputInstance]))
     def _handle_atfrac(self,tree,context):
-        raise NotImplementedError()
+        # tree is SpudParser.Atfrac
+        for child in tree.children:
+            if isinstance(child,SpudParser.AtsubContext):
+                pattern = self._handle_atsub(child,context)
+                self.rules.append(Rule(pattern,[FracRuleOutputInstance]))
     def _handle_atbegin(self,tree,context):
         # tree is SpudParser.AtbeginContext
         # return a new context with the correct value of multiply
