@@ -203,8 +203,29 @@ class SpudLoader(object):
         if "multiply" in context:
             number = number * context["multiply"]
         self.ingredients.append( Ingredient(number,unit,name,props) )
-    def _handle_linestandardrule(self,tree,context):
+    def _handle_linerenaming(self,tree,context):
         raise NotImplementedError()
+    def _handle_lineprefixing(self,tree,context):
+        raise NotImplementedError()
+    def _handle_lineinserting(self,tree,context):
+        raise NotImplementedError()
+    def _handle_linesingleconverting(self,tree,context):
+        raise NotImplementedError()
+    def _handle_linedoubleconverting(self,tree,context):
+        raise NotImplementedError()
+    def _handle_linestandardrule(self,tree,context):
+        # tree is SpudParser.LinestandardruleContext
+        for child in tree.children:
+            if isinstance(child,SpudParser.LinerenamingContext):
+                self._handle_linerenaming(child,context)
+            elif isinstance(child,SpudParser.LineprefixingContext):
+                self._handle_lineprefixing(child,context)
+            elif isinstance(child,SpudParser.LineinsertingContext):
+                self._handle_lineinserting(child,context)
+            elif isinstance(child,SpudParser.LinesingleconvertingContext):
+                self._handle_linesingleconverting(child,context)
+            elif isinstance(child,SpudParser.LinedoubleconvertingContext):
+                self._handle_linedoubleconverting(child,context)
     def _handle_atsub1(self,tree,context):
         # tree is SpudPArser.Atsub1Context
         for child in tree.children:
