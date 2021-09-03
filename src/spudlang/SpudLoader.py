@@ -6,6 +6,7 @@ import hashlib
 from copy import copy
 import antlr4
 from antlr4.error.ErrorListener import ErrorListener
+from .Pattern import SinglePattern, DoublePattern
 from .Rule import Rule, HoldRule
 from .RuleOutput import DecRuleOutputInstance, FracRuleOutputInstance
 from .SpudLexer import SpudLexer
@@ -205,11 +206,28 @@ class SpudLoader(object):
     def _handle_linestandardrule(self,tree,context):
         raise NotImplementedError()
     def _handle_atsub1(self,tree,context):
-        raise NotImplementedError()
+        # tree is SpudPArser.Atsub1Context
+        for child in tree.children:
+            if isinstance(child,SpudParser.PownamewithpropsContext):
+                name, props = self._handle_name_and_props(child,context)
+                return DoublePattern(None,name,props)
     def _handle_atsub2(self,tree,context):
-        raise NotImplementedError()
+        # tree is SpudParser.Atsub2Context
+        name = None
+        props = set()
+        for child in tree.children:
+            if isinstance(child,SpudParser.PownameContext):
+                unit = self._handle_all_names(child,context)
+            elif isinstance(child,SpudParser.PowwildwithpropsContext):
+                name, props = self._handle_name_and_props(child,context)
+        return DoublePattern(unit,name,props)
     def _handle_atsub(self,tree,context):
-        raise NotImplementedError()
+        # tree is SpudParser.AtsubContext
+        for child in tree.children:
+            if isinstance(child,SpudParser.Atsub1Context):
+                return self._handle_atsub1(child,context)
+            if isinstance(child,SpudParser.Atsub2Context):
+                return self._handle_atsub2(child,context)
     def _handle_athold(self,tree,context):
         # tree is SpudParser.AtholdContext
         for child in tree.children:
