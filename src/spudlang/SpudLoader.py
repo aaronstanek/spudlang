@@ -141,7 +141,7 @@ class SpudLoader(object):
             return []
         props = []
         for child in tree.children:
-            props.append(self._handle_all_prop_elements)
+            props.append(self._handle_all_prop_elements(child,context))
         return props
     def _handle_all_names(self,tree,context):
         # tree is SpudParser.Basicname
