@@ -251,7 +251,27 @@ class SpudLoader(object):
                     ro = PropertiesRuleOutput(ro,right[i][1])
                 outputs.append(ro)
             self.rules.append(Rule(pattern,outputs))
+    def _handle_singleconvertingleftelem(self,tree,context):
+        raise NotImplementedError()
+    def _handle_singleconvertingrightelem(self,tree,context):
+        raise NotImplementedError()
+    def _handle_singleconvertingleft(self,tree,context):
+        raise NotImplementedError()
+    def _handle_singleconvertingright(self,tree,context):
+        raise NotImplementedError()
     def _handle_linesingleconverting(self,tree,context):
+        raise NotImplementedError()
+    def _handle_doubleconvertingleftsub1(self,tree,context):
+        raise NotImplementedError()
+    def _handle_doubleconvertingleftsub2(self,tree,context):
+        raise NotImplementedError()
+    def _handle_doubleconvertingleftelem(self,tree,context):
+        raise NotImplementedError()
+    def _handle_doubleconvertingrightelem(self,tree,context):
+        raise NotImplementedError()
+    def _handle_doubleconvertingleft(self,tree,context):
+        raise NotImplementedError()
+    def _handle_doubleconvertingright(self,tree,context):
         raise NotImplementedError()
     def _handle_linedoubleconverting(self,tree,context):
         raise NotImplementedError()
