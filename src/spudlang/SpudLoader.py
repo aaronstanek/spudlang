@@ -10,6 +10,7 @@ from .Pattern import SinglePattern, DoublePattern
 from .Rule import Rule, HoldRule
 from .RuleOutput import (
     RenamingRuleOutput, PrefixingRuleOutput, InsertingRuleOutput,
+     SingleConvertingRuleOutput,
     DecRuleOutputInstance, FracRuleOutputInstance, PropertiesRuleOutput)
 from .SpudLexer import SpudLexer
 from .SpudParser import SpudParser
@@ -252,15 +253,64 @@ class SpudLoader(object):
                 outputs.append(ro)
             self.rules.append(Rule(pattern,outputs))
     def _handle_singleconvertingleftelem(self,tree,context):
-        raise NotImplementedError()
+        # tree is SpudParser.SingleconvertingleftelemContext
+        for child in tree.children:
+            if isinstance(child,SpudParser.NumberContext):
+                number = MyNumber.from_tree(child)
+            elif isinstance(child,SpudParser.PownamewithpropsContext):
+                name, props = self._handle_name_and_props(child,context)
+                return (number,name,props)
     def _handle_singleconvertingrightelem(self,tree,context):
-        raise NotImplementedError()
+        # tree is SpudParser.SingleconvertingrightelemContext
+        for child in tree.children:
+            if isinstance(child,SpudParser.NumberContext):
+                number = MyNumber.from_tree(child)
+            elif isinstance(child,antlr4.tree.Tree.TerminalNodeImpl):
+                # can only be $
+                number = None
+            elif isinstance(child,SpudParser.BasicwildwithpropsContext):
+                name, props = self._handle_name_and_props(child,context)
+                return (number,name,props)
     def _handle_singleconvertingleft(self,tree,context):
-        raise NotImplementedError()
+        # tree is SpudParser.SingleconvertingleftContext
+        patterns = []
+        for child in tree.children:
+            if isinstance(child,SpudParser.singleconvertingleftelem):
+                patterns.append(self._handle_singleconvertingleftelem(child,context))
+        return patterns
     def _handle_singleconvertingright(self,tree,context):
-        raise NotImplementedError()
+        # tree is SpudParser.SingleconvertingrightContext
+        outputs = []
+        for child in tree.children:
+            if isinstance(child,SpudParser.singleconvertingrightelem):
+                outputs.append(self._handle_singleconvertingrightelem(child,context))
+        return outputs
     def _handle_linesingleconverting(self,tree,context):
-        raise NotImplementedError()
+        # tree is SpudParser.LinesingleconvertingContext
+        for child in tree.children:
+            if isinstance(child,SpudParser.SingleconvertingleftContext):
+                left = self._handle_singleconvertingleft(child,context)
+            elif isinstance(child,SpudParser.SingleconvertingrightContext):
+                right = self._handle_singleconvertingright(child,context)
+        for i in range(len(left)):
+            # left[i][0] is the number, not None
+            # left[i][1] is the name
+            # left[i][2] is the props
+            denominator = left[i][0].multiplicative_inverse()
+            pattern = SinglePattern(left[i][1],left[i][2])
+            outputs = []
+            for j in range(len(right)):
+                # elements of right are (number,name,props)
+                # number may be None
+                if right[j][0] is None:
+                    ratio = MyNumber((1,1))
+                else:
+                    ratio = denominator * right[j][0]
+                ro = SingleConvertingRuleOutput(ratio,right[j][1])
+                if len(right[j][2]) != 0:
+                    ro = PropertiesRuleOutput(ro,right[j][2])
+                outputs.append(ro)
+            self.rules.append(Rule(pattern,outputs))
     def _handle_doubleconvertingleftsub1(self,tree,context):
         raise NotImplementedError()
     def _handle_doubleconvertingleftsub2(self,tree,context):
