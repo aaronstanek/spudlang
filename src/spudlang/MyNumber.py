@@ -281,7 +281,7 @@ class MyNumber(object):
         for child in tree.children:
             if isinstance(child,SpudParser.NonzerostringContext):
                 return MyNumber((int(child.getText()),1))
-            if isinstance(child,(SpudParser.decimallarge,SpudParser.decimalsmall)):
+            if isinstance(child,(SpudParser.DecimallargeContext,SpudParser.DecimalsmallContext)):
                 return MyNumber(float(child.getText()))
             if isinstance(child,SpudParser.FractionsimpleContext):
                 return MyNumber(MyNumber._handle_fractionsimple(child))
