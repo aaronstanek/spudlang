@@ -316,9 +316,9 @@ class SpudLoader(object):
         # or SpudParser.Doubleconvertingleftsub2Context
         for child in tree.children:
             if isinstance(child,antlr4.tree.Tree.TerminalNodeImpl):
-                # can only be $
-                unit = None
-            elif isinstance(child,SpudParser.PownameContext):
+                if child.getText() == "$":
+                    unit = None
+            if isinstance(child,SpudParser.PownameContext):
                 unit = self._handle_all_names(child,context)
             elif isinstance(child,
                 (SpudParser.PownamewithpropsContext,
