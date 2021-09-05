@@ -386,7 +386,12 @@ class SpudLoader(object):
             # left[i][2] is the name, may be None
             # left[i][3] is the props
             denominator = left[i][0].multiplicative_inverse()
-            pattern = DoublePattern(left[i][1],left[i][2],left[i][3])
+            # need to convert props to correct format
+            props = {}
+            for prop in left[i][3]:
+                # prop is (name<str>,value<bool>)
+                props[prop[0]] = prop[1]
+            pattern = DoublePattern(left[i][1],left[i][2],props)
             outputs = []
             for j in range(len(right)):
                 if right[j][0] is None:
