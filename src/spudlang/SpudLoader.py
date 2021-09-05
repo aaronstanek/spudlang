@@ -9,7 +9,7 @@ from antlr4.error.ErrorListener import ErrorListener
 from .Pattern import SinglePattern, DoublePattern
 from .Rule import Rule, HoldRule
 from .RuleOutput import (
-    RenamingRuleOutput, PrefixingRuleOutput, InsertingRuleOutput,
+    DoubleConvertingRuleOutput, RenamingRuleOutput, PrefixingRuleOutput, InsertingRuleOutput,
      SingleConvertingRuleOutput,
     DecRuleOutputInstance, FracRuleOutputInstance, PropertiesRuleOutput)
 from .SpudLexer import SpudLexer
@@ -311,20 +311,92 @@ class SpudLoader(object):
                     ro = PropertiesRuleOutput(ro,right[j][2])
                 outputs.append(ro)
             self.rules.append(Rule(pattern,outputs))
-    def _handle_doubleconvertingleftsub1(self,tree,context):
-        raise NotImplementedError()
-    def _handle_doubleconvertingleftsub2(self,tree,context):
-        raise NotImplementedError()
+    def _handle_doubleconvertingleftsub_1_2(self,tree,context):
+        # tree is SpudParser.Doubleconvertingleftsub1Context
+        # or SpudParser.Doubleconvertingleftsub2Context
+        for child in tree.children:
+            if isinstance(child,antlr4.tree.Tree.TerminalNodeImpl):
+                # can only be $
+                unit = None
+            elif isinstance(child,SpudParser.PownameContext):
+                unit = self._handle_all_names(child,context)
+            elif isinstance(child,
+                (SpudParser.PownamewithpropsContext,
+                SpudParser.PowwildwithpropsContext)):
+                    name, props = self._handle_name_and_props(child,context)
+                    return unit, name, props
     def _handle_doubleconvertingleftelem(self,tree,context):
-        raise NotImplementedError()
+        # tree is SpudParser.DoubleconvertingleftelemContext
+        for child in tree.children:
+            if isinstance(child,SpudParser.NumberContext):
+                number = MyNumber.from_tree(child)
+            elif isinstance(child,
+                (SpudParser.Doubleconvertingleftsub1Context,
+                SpudParser.Doubleconvertingleftsub1Context)):
+                    unit, name, props = self._handle_doubleconvertingleftsub_1_2(child,context)
+                    return (number,unit,name,props)
     def _handle_doubleconvertingrightelem(self,tree,context):
-        raise NotImplementedError()
+        # tree is SpudParser.DoubleconvertingrightelemContext
+        is_number_seen = False
+        for child in tree.children:
+            if isinstance(child,antlr4.tree.Tree.TerminalNodeImpl):
+                # can only be $
+                # but may be number or unit
+                # depending on context
+                if is_number_seen:
+                    # it is the unit
+                    unit = None
+                else:
+                    # it is the number
+                    is_number_seen = True
+                    number = None
+            elif isinstance(child,SpudParser.NumberContext):
+                is_number_seen = True
+                number = MyNumber.from_tree(child)
+            elif isinstance(child,SpudParser.BasicnameContext):
+                unit = self._handle_all_names(child,context)
+            elif isinstance(child,SpudParser.BasicwildwithpropsContext):
+                name, props = self._handle_name_and_props(child,context)
+                return (number,unit,name,props)
     def _handle_doubleconvertingleft(self,tree,context):
-        raise NotImplementedError()
+        # tree is SpudParser.DoubleconvertingleftContext
+        patterns = []
+        for child in tree.children:
+            if isinstance(child,SpudParser.DoubleconvertingleftelemContext):
+                patterns.append(self._handle_doubleconvertingleftelem(child,context))
+        return patterns
     def _handle_doubleconvertingright(self,tree,context):
-        raise NotImplementedError()
+        # tree is SpudParser.DoubleconvertingrightContext
+        outputs = []
+        for child in tree.children:
+            if isinstance(child,SpudParser.DoubleconvertingrightelemContext):
+                outputs.append(self._handle_doubleconvertingrightelem(child,context))
+        return outputs
     def _handle_linedoubleconverting(self,tree,context):
-        raise NotImplementedError()
+        # tree is SpudParser.LinedoubleconvertingContext
+        for child in tree.children:
+            if isinstance(child,SpudParser.DoubleconvertingleftContext):
+                left = self._handle_doubleconvertingleft(child,context)
+            elif isinstance(child,SpudParser.DoubleconvertingrightContext):
+                right = self._handle_doubleconvertingright(child,context)
+        for i in range(len(left)):
+            # left[i][0] is the number, not None
+            # left[i][1] is the unit, may be None
+            # left[i][2] is the name, may be None
+            # left[i][3] is the props
+            denominator = left[i][0].multiplicative_inverse()
+            pattern = DoublePattern(left[i][1],left[i][2],left[i][3])
+            outputs = []
+            for j in range(len(right)):
+                if right[j][0] is None:
+                    ratio = None
+                else:
+                    ratio = denominator * right[j][0]
+                ro = DoubleConvertingRuleOutput(ratio,right[j][1],right[j][2])
+                if len(right[j][3]) != 0:
+                    ro = PropertiesRuleOutput(ro,right[j][3])
+                outputs.append(ro)
+            self.rules.append(Rule(pattern,outputs))
     def _handle_linestandardrule(self,tree,context):
         # tree is SpudParser.LinestandardruleContext
         for child in tree.children:
