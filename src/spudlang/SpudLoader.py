@@ -332,7 +332,7 @@ class SpudLoader(object):
                 number = MyNumber.from_tree(child)
             elif isinstance(child,
                 (SpudParser.Doubleconvertingleftsub1Context,
-                SpudParser.Doubleconvertingleftsub1Context)):
+                SpudParser.Doubleconvertingleftsub2Context)):
                     unit, name, props = self._handle_doubleconvertingleftsub_1_2(child,context)
                     return (number,unit,name,props)
     def _handle_doubleconvertingrightelem(self,tree,context):
