@@ -126,9 +126,9 @@ class SpudLoader(object):
             # all terminal nodes
             text = child.getText()
             if child.getSymbol().type == SpudParser.Namesegment:
-                return (sign,text)
+                return (text,sign)
             elif text == "$":
-                return (sign,text)
+                return (text,sign)
             elif text == "+":
                 sign = True
             elif text == "-":
