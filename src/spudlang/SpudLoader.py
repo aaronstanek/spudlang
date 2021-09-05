@@ -471,7 +471,7 @@ class SpudLoader(object):
         for child in tree.children:
             if isinstance(child,SpudParser.NumberContext):
                 value = MyNumber.from_tree(child)
-                new_context = copy(value)
+                new_context = copy(context)
                 if "multiply" in new_context:
                     value = new_context["multiply"] * value
                 new_context["multiply"] = value
