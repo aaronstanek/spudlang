@@ -318,6 +318,7 @@ class SpudLoader(object):
             if isinstance(child,antlr4.tree.Tree.TerminalNodeImpl):
                 if child.getText() == "$":
                     unit = None
+                    continue
             if isinstance(child,SpudParser.PownameContext):
                 unit = self._handle_all_names(child,context)
             elif isinstance(child,
