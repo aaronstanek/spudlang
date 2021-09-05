@@ -9,8 +9,8 @@ from antlr4.error.ErrorListener import ErrorListener
 from .Pattern import SinglePattern, DoublePattern
 from .Rule import Rule, HoldRule
 from .RuleOutput import (
-    DoubleConvertingRuleOutput, RenamingRuleOutput, PrefixingRuleOutput, InsertingRuleOutput,
-     SingleConvertingRuleOutput,
+    RenamingRuleOutput, PrefixingRuleOutput, InsertingRuleOutput,
+    SingleConvertingRuleOutput, DoubleConvertingRuleOutput,
     DecRuleOutputInstance, FracRuleOutputInstance, PropertiesRuleOutput)
 from .SpudLexer import SpudLexer
 from .SpudParser import SpudParser
@@ -171,7 +171,7 @@ class SpudLoader(object):
         # SpudParser.Powwildwithprops
         # SpudParser.Basicwildwithprops
         if isinstance(tree,(SpudParser.PowwildwithpropsContext,SpudParser.BasicwildwithpropsContext)):
-            return self._handle_name_and_props(tree.children[0])
+            return self._handle_name_and_props(tree.children[0],context)
         if isinstance(tree.children[0],antlr4.tree.Tree.TerminalNodeImpl):
             # can only be $
             name = None
