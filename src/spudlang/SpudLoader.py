@@ -469,7 +469,7 @@ class SpudLoader(object):
         # tree is SpudParser.AtbeginContext
         # return a new context with the correct value of multiply
         for child in tree.children:
-            if isinstance(child,SpudParser.number):
+            if isinstance(child,SpudParser.NumberContext):
                 value = MyNumber.from_tree(child)
                 new_context = copy.copy(value)
                 if "multiply" in new_context:
