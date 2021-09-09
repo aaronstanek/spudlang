@@ -206,7 +206,7 @@ class SpudLoader(object):
                     props.add(prop[0])
         if number is None:
             # unit is also None
-            number = MyNumber((1,0))
+            number = MyNumber.one
             unit = ["mealsworth"]
         elif unit is None:
             # unit is None
@@ -313,7 +313,7 @@ class SpudLoader(object):
                 # elements of right are (number,name,props)
                 # number may be None
                 if right[j][0] is None:
-                    ratio = MyNumber((1,1))
+                    ratio = MyNumber.one
                 else:
                     ratio = denominator * right[j][0]
                 ro = SingleConvertingRuleOutput(ratio,right[j][1])
