@@ -2,53 +2,8 @@
 
 import sys
 import os
-import hashlib
-from . import PreLex
-from . import Lex
-from . import Parse
-from . import Rule
-
-def load_file_raw(path):
-    if path[-5:] != ".spud":
-        path = path + ".spud"
-    if os.path.isfile(path):
-        with open(path,"rb") as file:
-            return file.read()
-    else:
-        raise Exception("Unable to locate file: "+path)
-
-def convert_to_absolute_pathnames(base,path):
-    if os.path.isabs(path):
-        return path
-
-def recursive_load(path,seen=set()):
-    # recursively loads all input files
-    raw_data = load_file_raw(path)
-    hex_hash = hashlib.sha256(raw_data).hexdigest()
-    if hex_hash in seen:
-        # we have already loaded this file
-        return []
-    else:
-        # hex_hash has not been seen yet
-        seen.add(hex_hash)
-    raw_data = PreLex.convert_equivalent_codes(raw_data)
-    raw_data = PreLex.make_lines(raw_data)
-    raw_data = list(filter(lambda x: not PreLex.is_empty(x), raw_data))
-    raw_data = list(filter(lambda x: not PreLex.is_comment(x), raw_data))
-    # raw_data is now a list of strings
-    # there are no empty lines
-    # and no comments
-    imports = list(filter(PreLex.is_import, raw_data))
-    imports = list(map(PreLex.interpret_import, imports))
-    output = []
-    for import_path in imports:
-        if not os.path.isabs(import_path):
-            import_path = os.path.join(os.path.dirname(path),import_path)
-            import_path = os.path.abspath(import_path)
-        output += recursive_load(import_path,seen)
-    raw_data = list(filter(lambda x: not PreLex.is_import(x), raw_data))
-    output += raw_data
-    return output
+from .SpudLoader import SpudLoader
+from .Rule import RuleBox
 
 def main():
     if len(sys.argv) != 2:
@@ -57,25 +12,11 @@ def main():
         initial_path = sys.argv[1]
     else:
         initial_path = os.path.join(os.getcwd(),sys.argv[1])
-    lines = recursive_load(initial_path)
-    # lines are the all the lines of the input
-    # in order, as strings
-    # no comments, imports or empty lines
-    lines = list(map(PreLex.validate_and_expand, lines))
-    lines = list(map(PreLex.make_words, lines))
-    # lines is now a list of lists of strings
-    # none of the strings are empty
-    # but some of the lists may be
-    lines = list(map(Lex.lex, lines))
-    Parse.resolve_begin_end(lines)
-    ingredients, rules = Parse.parse_all_lines(lines)
-    del lines
-    rulebox = Rule.RuleBox()
-    rulebox.add(rules)
-    del rules
-    html = rulebox.resolve_to_html_document(ingredients)
-    del ingredients
-    del rulebox
+    loader = SpudLoader()
+    loader.recursive_load_parse(initial_path)
+    rulebox = RuleBox()
+    rulebox.add(loader.rules)
+    html = rulebox.resolve_to_html_document(loader.ingredients)
     with open("ResultsTree.html","w") as file:
         file.write(html)
 
