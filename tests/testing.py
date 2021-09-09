@@ -145,24 +145,6 @@ class TestMyNumber(unittest.TestCase):
         self.assertFalse(b.is_fraction)
         self.assertEqual(b.value,0.5)
 
-    def test_from_string(self):
-        a = MyNumber.from_string("3")
-        self.assertEqual(type(a),MyNumber)
-        self.assertTrue(a.is_fraction)
-        self.assertEqual(a.value,(3,1))
-        a = MyNumber.from_string("3.0")
-        self.assertEqual(type(a),MyNumber)
-        self.assertFalse(a.is_fraction)
-        self.assertEqual(a.value,3.0)
-        a = MyNumber.from_string("3/4")
-        self.assertEqual(type(a),MyNumber)
-        self.assertTrue(a.is_fraction)
-        self.assertEqual(a.value,(3,4))
-        a = MyNumber.from_string("3 1/2")
-        self.assertEqual(type(a),MyNumber)
-        self.assertTrue(a.is_fraction)
-        self.assertEqual(a.value,(7,2))
-
 class TestPattern(unittest.TestCase):
 
     def test_ingredient_creation(self):
