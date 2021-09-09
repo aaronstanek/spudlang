@@ -256,9 +256,9 @@ class SpudLoader(object):
             pattern_size = len(left[i][0])
             outputs = []
             for j in range(len(right)):
-                ro = InsertingRuleOutput(pattern_size,right[i][0])
-                if len(right[i][1]) != 0:
-                    ro = PropertiesRuleOutput(ro,right[i][1])
+                ro = InsertingRuleOutput(pattern_size,right[j][0])
+                if len(right[j][1]) != 0:
+                    ro = PropertiesRuleOutput(ro,right[j][1])
                 outputs.append(ro)
             self.rules.append(Rule(pattern,outputs))
     def _handle_singleconvertingleftelem(self,tree,context):
