@@ -242,7 +242,7 @@ class SpudLoader(object):
                 ro = PropertiesRuleOutput(ro,right[i][1])
             right[i] = ro
         for i in range(len(left)):
-            pattern = SinglePattern(left[i][0],left[i][1])
+            pattern = SinglePattern(left[i][0],self._props_conversion(left[i][1]))
             self.rules.append(Rule(pattern,right))
     def _handle_lineinserting(self,tree,context):
         # tree is SpudParser.LineinsertingContext
@@ -252,7 +252,7 @@ class SpudLoader(object):
             elif isinstance(child,SpudParser.RulerightsimpleContext):
                 right = self._handle_rule_side_simple(child,context)
         for i in range(len(left)):
-            pattern = SinglePattern(left[i][0],left[i][1])
+            pattern = SinglePattern(left[i][0],self._props_conversion(left[i][1]))
             pattern_size = len(left[i][0])
             outputs = []
             for j in range(len(right)):
@@ -306,7 +306,7 @@ class SpudLoader(object):
             # left[i][1] is the name
             # left[i][2] is the props
             denominator = left[i][0].multiplicative_inverse()
-            pattern = SinglePattern(left[i][1],left[i][2])
+            pattern = SinglePattern(left[i][1],self._props_conversion(left[i][2]))
             outputs = []
             for j in range(len(right)):
                 # elements of right are (number,name,props)
@@ -395,12 +395,7 @@ class SpudLoader(object):
             # left[i][2] is the name, may be None
             # left[i][3] is the props
             denominator = left[i][0].multiplicative_inverse()
-            # need to convert props to correct format
-            props = {}
-            for prop in left[i][3]:
-                # prop is (name<str>,value<bool>)
-                props[prop[0]] = prop[1]
-            pattern = DoublePattern(left[i][1],left[i][2],props)
+            pattern = DoublePattern(left[i][1],left[i][2],self._props_conversion(left[i][3]))
             outputs = []
             for j in range(len(right)):
                 if right[j][0] is None:
@@ -430,17 +425,17 @@ class SpudLoader(object):
         for child in tree.children:
             if isinstance(child,SpudParser.PownamewithpropsContext):
                 name, props = self._handle_name_and_props(child,context)
-                return DoublePattern(None,name,props)
+                return DoublePattern(None,name,self._props_conversion(props))
     def _handle_atsub2(self,tree,context):
         # tree is SpudParser.Atsub2Context
         name = None
-        props = set()
+        props = {}
         for child in tree.children:
             if isinstance(child,SpudParser.PownameContext):
                 unit = self._handle_all_names(child,context)
             elif isinstance(child,SpudParser.PowwildwithpropsContext):
                 name, props = self._handle_name_and_props(child,context)
-        return DoublePattern(unit,name,props)
+        return DoublePattern(unit,name,self._props_conversion(props))
     def _handle_atsub(self,tree,context):
         # tree is SpudParser.AtsubContext
         for child in tree.children:
