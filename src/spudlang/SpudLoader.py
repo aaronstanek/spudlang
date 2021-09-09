@@ -143,6 +143,15 @@ class SpudLoader(object):
         for child in tree.children:
             props.append(self._handle_all_prop_elements(child,context))
         return props
+    @staticmethod
+    def _props_conversion(props_in):
+        # props_in is list(tuple(str,bool))
+        # we will output the same information
+        # in dict(str->bool)
+        props_out = {}
+        for element in props_in:
+            props_out[element[0]] = element[1]
+        return props_out
     def _handle_all_names(self,tree,context):
         # tree is SpudParser.Basicname
         # or SpudParser.Powname
