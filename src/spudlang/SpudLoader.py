@@ -529,6 +529,3 @@ class SpudLoader(object):
                 statement
             ))
         self._handle_spud(tree)
-
-x = SpudLoader()
-x.recursive_load_parse("../tests/test_dir/main.spud")
