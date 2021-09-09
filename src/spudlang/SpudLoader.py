@@ -231,6 +231,7 @@ class SpudLoader(object):
     def _handle_line_renaming_prefixing(self,tree,context,output_type):
         # tree is SpudParser.LinerenamingContext
         # or SpudParser.LineprefixingContext
+        # output_type is either RenamingRuleOutput or PrefixingRuleOutput
         for child in tree.children:
             if isinstance(child,SpudParser.RuleleftsimpleContext):
                 left = self._handle_rule_side_simple(child,context)
