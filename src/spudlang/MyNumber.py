@@ -288,3 +288,5 @@ class MyNumber(object):
             if isinstance(child,SpudParser.FractioncomplexContext):
                 return MyNumber(MyNumber._handle_fractioncomplex(child))
         raise Exception("Internal Error")
+
+MyNumber.one = MyNumber((1,1))
