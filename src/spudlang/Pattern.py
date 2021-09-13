@@ -42,7 +42,7 @@ class Pattern(object):
             sample_start_index = len(sample) - rule_length
             if sample_start_index < 0:
                 return None
-            if sample[sample_start_index] == rule[:-1]:
+            if sample[sample_start_index:] == rule[:-1]:
                 return sample_start_index
             else:
                 return None
