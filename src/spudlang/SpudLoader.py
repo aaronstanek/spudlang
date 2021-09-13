@@ -285,14 +285,14 @@ class SpudLoader(object):
         # tree is SpudParser.SingleconvertingleftContext
         patterns = []
         for child in tree.children:
-            if isinstance(child,SpudParser.singleconvertingleftelem):
+            if isinstance(child,SpudParser.SingleconvertingleftContext):
                 patterns.append(self._handle_singleconvertingleftelem(child,context))
         return patterns
     def _handle_singleconvertingright(self,tree,context):
         # tree is SpudParser.SingleconvertingrightContext
         outputs = []
         for child in tree.children:
-            if isinstance(child,SpudParser.singleconvertingrightelem):
+            if isinstance(child,SpudParser.SingleconvertingrightelemContext):
                 outputs.append(self._handle_singleconvertingrightelem(child,context))
         return outputs
     def _handle_linesingleconverting(self,tree,context):
