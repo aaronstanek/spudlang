@@ -37,9 +37,12 @@ NoneRuleOutputInstance = NoneRuleOutput()
 
 class RenamingRuleOutput(RuleOutput):
     def __init__(self,output_name):
-        listOfStrings(output_name)
+        if output_name is not None:
+            listOfStrings(output_name)
         self.output_name = output_name
     def apply(self,ig,match_token):
+        if self.output_name is None:
+            return ig
         # match token must come from SinglePattern
         self.check_conformity(ig,match_token,2)
         output = ig.duplicate()
