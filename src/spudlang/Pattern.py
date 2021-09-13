@@ -20,6 +20,33 @@ class Pattern(object):
         # for a match, rule must be a subset of sample
         # returns the index of sample where rule begins
         # or returns None if no match
+        # rule has nonzero length
+        # check for !
+        if rule[0] == "!":
+            if rule[-1] == "!":
+                # we must match the rule exactly
+                if sample == rule[1:-1]:
+                    return 0
+                else:
+                    return None
+            else:
+                # we must start the rule at the start of the sample
+                rule_length = len(rule) - 1
+                if sample[0:rule_length] == rule[1:]:
+                    return 0
+                else:
+                    return None
+        if rule[-1] == "!":
+            # we must end the rule at the end of the sample
+            rule_length = len(rule) - 1
+            sample_start_index = len(sample) - rule_length
+            if sample_start_index < 0:
+                return None
+            if sample[sample_start_index] == rule[:-1]:
+                return sample_start_index
+            else:
+                return None
+        # no ! in the rule
         for sample_index in range(len(sample)-len(rule)+1):
             matches = True
             for rule_index in range(len(rule)):
