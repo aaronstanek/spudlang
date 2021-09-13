@@ -351,16 +351,16 @@ class SpudLoader(object):
         is_number_seen = False
         for child in tree.children:
             if isinstance(child,antlr4.tree.Tree.TerminalNodeImpl):
-                # can only be $
-                # but may be number or unit
-                # depending on context
-                if is_number_seen:
-                    # it is the unit
-                    unit = None
-                else:
-                    # it is the number
-                    is_number_seen = True
-                    number = None
+                if child.getText() == "$": # ignore otherwise
+                    # but may be number or unit
+                    # depending on context
+                    if is_number_seen:
+                        # it is the unit
+                        unit = None
+                    else:
+                        # it is the number
+                        is_number_seen = True
+                        number = None
             elif isinstance(child,SpudParser.NumberContext):
                 is_number_seen = True
                 number = MyNumber.from_tree(child)
