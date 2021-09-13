@@ -272,14 +272,12 @@ class SpudLoader(object):
                 return (number,name,props)
     def _handle_singleconvertingrightelem(self,tree,context):
         # tree is SpudParser.SingleconvertingrightelemContext
-        seen_number = False
         for child in tree.children:
             if isinstance(child,SpudParser.NumberContext):
-                seen_number = True
                 number = MyNumber.from_tree(child)
             elif isinstance(child,antlr4.tree.Tree.TerminalNodeImpl):
-                if not seen_number:
-                    return None
+                if child.getText() == "$":
+                    return None # ignore this otherwise
             elif isinstance(child,SpudParser.BasicwildwithpropsContext):
                 name, props = self._handle_name_and_props(child,context)
                 return (number,name,props)
