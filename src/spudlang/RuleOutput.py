@@ -161,7 +161,10 @@ class PropertiesRuleOutput(RuleOutput):
             if edit[1]:
                 output.props.add(edit[0])
             else:
-                if edit[0] in output.props:
+                if edit[0] == "$":
+                    # remove all
+                    output.props = set()
+                elif edit[0] in output.props:
                     output.props.remove(edit[0])
         return output
     def priority(self):
