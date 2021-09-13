@@ -285,7 +285,7 @@ class SpudLoader(object):
         # tree is SpudParser.SingleconvertingleftContext
         patterns = []
         for child in tree.children:
-            if isinstance(child,SpudParser.SingleconvertingleftContext):
+            if isinstance(child,SpudParser.SingleconvertingleftelemContext):
                 patterns.append(self._handle_singleconvertingleftelem(child,context))
         return patterns
     def _handle_singleconvertingright(self,tree,context):
