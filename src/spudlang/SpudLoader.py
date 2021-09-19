@@ -479,9 +479,8 @@ class SpudLoader(object):
             if isinstance(child,SpudParser.AtsubContext):
                 pattern = self._handle_atsub(child,context)
                 self.rules.append(Rule(pattern,[FracRuleOutputInstance]))
-    def _handle_atbegin(self,tree,context):
-        # tree is SpudParser.AtbeginContext
-        # return a new context with the correct value of multiply
+    def _handle_atbeginmultiply(self,tree,context):
+        # tree is SpudParser.AtbeginmultiplyContext
         for child in tree.children:
             if isinstance(child,SpudParser.NumberContext):
                 value = MyNumber.from_tree(child)
@@ -490,6 +489,15 @@ class SpudLoader(object):
                     value = new_context["multiply"] * value
                 new_context["multiply"] = value
                 return new_context
+    def _handle_atbegin(self,tree,context):
+        # tree is SpudParser.AtbeginContext
+        # return a new context with updated values
+        for child in tree.children:
+            if isinstance(child,SpudParser.AtbeginisolateContext):
+                # ignore all external forces
+                return {}
+            if isinstance(child,SpudParser.AtbeginmultiplyContext):
+                return self._handle_atbeginmultiply(child,context)
         raise Exception("Internal Error")
     def _handle_atsection(self,tree,context):
         # tree is SpudParser.AtsectionContext
