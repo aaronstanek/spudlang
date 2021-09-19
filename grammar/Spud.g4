@@ -119,8 +119,11 @@ lineat : atimport | athold
     | atholdunit | atdec
     | atfrac | atsection ;
 
+verisoncontrol : 'spudversion' (~Returnwhitespacetoken)* ;
+
 line : Inlinewhitespacetoken*
-    ((lineingredient | linestandardrule | lineat) Inlinewhitespacetoken*)?
+    ((lineingredient | linestandardrule | lineat | verisoncontrol)
+        Inlinewhitespacetoken*)?
     onelinecomment? ;
 
 spud : (line linebreak)* line EOF ;
