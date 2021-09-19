@@ -47,20 +47,22 @@ class SpudLoader(object):
                 return file.read()
         else:
             raise Exception("Unable to locate file: "+path)
-    def get_tree(self,abs_path):
+    def get_tree(self,abs_path,force):
         # abs_path is a string with the absolute file path to load
+        # force is a bool. True means load outside the normal import system
         # returns either the syntax tree for the source file
         # or None
         raw = self.load_file_raw(abs_path)
-        file_hash = hashlib.sha256(raw).digest()
-        if file_hash in self.seen:
-            # we have seen this file before
-            return None
-        else:
-            # we have not seen this file before
-            # register it so that we do not
-            # need to process it again
-            self.seen.add(file_hash)
+        if not force:
+            file_hash = hashlib.sha256(raw).digest()
+            if file_hash in self.seen:
+                # we have seen this file before
+                return None
+            else:
+                # we have not seen this file before
+                # register it so that we do not
+                # need to process it again
+                self.seen.add(file_hash)
         # check the source version to make sure
         # that it's compatible with this grammar
         try:
@@ -538,9 +540,9 @@ class SpudLoader(object):
         for child in tree.children:
             if isinstance(child,SpudParser.LineContext):
                 self._handle_line(child,{})
-    def recursive_load_parse(self,abs_path):
+    def recursive_load_parse(self,abs_path,force=False):
         # abs_path is a string with the absolute file path to load
-        tree = self.get_tree(abs_path)
+        tree = self.get_tree(abs_path,force)
         if tree is None:
             return
         imports = []
