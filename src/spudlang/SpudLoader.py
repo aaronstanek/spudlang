@@ -504,7 +504,7 @@ class SpudLoader(object):
         for child in tree.children:
             if isinstance(child,SpudParser.AtbeginisolateContext):
                 # ignore all external forces
-                return {}
+                return {"BASE_DIR":context["BASE_DIR"]}
             if isinstance(child,SpudParser.AtbeginmultiplyContext):
                 return self._handle_atbeginmultiply(child,context)
         raise Exception("Internal Error")
