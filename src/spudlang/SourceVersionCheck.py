@@ -74,9 +74,7 @@ def verify_version(version):
     while len(sections) < 3:
         sections.append(0)
     # major version
-    if sections[0] < this_verison["major"]:
-        return True
-    if sections[0] > this_verison["major"]:
+    if sections[0] != this_verison["major"]:
         return False
     # major versions are the same
     if sections[1] < this_verison["minor"]:
