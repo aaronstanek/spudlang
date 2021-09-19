@@ -109,8 +109,10 @@ atholdunit : '@holdunit' atsub ;
 atdec : '@dec' atsub ;
 atfrac : '@frac' atsub ;
 
+atbeginisolate : 'isolate' ;
+atbeginmultiply : 'multiply' Inlinewhitespacetoken+ number ;
 atbegin : '@begin' Inlinewhitespacetoken+
-    'multiply' Inlinewhitespacetoken+ number
+    (atbeginisolate | atbeginmultiply)
     Inlinewhitespacetoken* onelinecomment? ;
 atend : Inlinewhitespacetoken* '@end' ;
 atsection : atbegin linebreak (line linebreak)* atend ;
