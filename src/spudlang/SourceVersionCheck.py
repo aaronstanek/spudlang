@@ -98,10 +98,10 @@ def source_version_check(raw):
     # belongs to a compatible version
     # no version indicated will be allowed
     # throws exception on malformed input
-    # returns True for compatible and False for incompatible
+    # returns (True,) for compatible and (False,memo) for incompatible
     version = extract_version(raw)
     if version is None:
-        return True
+        return (True,)
     version_compat = verify_version(version)
     if version_compat:
         return (True,)
