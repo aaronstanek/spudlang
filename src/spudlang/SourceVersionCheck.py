@@ -4,7 +4,7 @@ def get_version_first_index(raw):
     # look for version~~ starting in the first 32 bytes
     # return first index of version if found
     # return None otherwise
-    target = b'version~~'
+    target = b'spudversion~~'
     for first_byte in range(32):
         match = True
         for i in range(len(target)):
