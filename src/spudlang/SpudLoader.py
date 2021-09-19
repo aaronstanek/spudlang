@@ -432,6 +432,13 @@ class SpudLoader(object):
                 self._handle_linesingleconverting(child,context)
             elif isinstance(child,SpudParser.LinedoubleconvertingContext):
                 self._handle_linedoubleconverting(child,context)
+    def _handle_atrun(self,tree,context):
+        # tree is SpudParser.AtrunContext
+        statement = tree.getText()
+        # search and replace all @run with @import
+        statement = "@import".join(statement.split("@run"))
+        abs_path = self.resolve_import_path(context["BASE_DIR"],statement)
+        self.recursive_load_parse(abs_path,True,context)
     def _handle_atsub1(self,tree,context):
         # tree is SpudPArser.Atsub1Context
         for child in tree.children:
@@ -512,7 +519,9 @@ class SpudLoader(object):
     def _handle_lineat(self,tree,context):
         # tree is SpudParser.LineatContext
         for child in tree.children:
-            if isinstance(child,SpudParser.AtholdContext):
+            if isinstance(child,SpudParser.AtrunContext):
+                self._handle_atrun(child,context)
+            elif isinstance(child,SpudParser.AtholdContext):
                 self._handle_athold(child,context)
             elif isinstance(child,SpudParser.AtholdunitContext):
                 self._handle_atholdunit(child,context)
@@ -533,23 +542,28 @@ class SpudLoader(object):
                 self._handle_linestandardrule(child,context)
             elif isinstance(child,SpudParser.LineatContext):
                 self._handle_lineat(child,context)
-    def _handle_spud(self,tree):
+    def _handle_spud(self,tree,context):
         # tree is a SpudParser.SpudContext
         if tree.children is None:
             return
         for child in tree.children:
             if isinstance(child,SpudParser.LineContext):
-                self._handle_line(child,{})
-    def recursive_load_parse(self,abs_path,force=False):
+                self._handle_line(child,context)
+    def recursive_load_parse(self,abs_path,force=False,context=None):
         # abs_path is a string with the absolute file path to load
         tree = self.get_tree(abs_path,force)
         if tree is None:
             return
         imports = []
         self.extract_imports(imports,tree)
+        if context is None:
+            context = {}
+        else:
+            context = copy(context)
+        context["BASE_DIR"] = os.path.dirname(abs_path)
         for statement in imports:
             self.recursive_load_parse(self.resolve_import_path(
-                os.path.dirname(abs_path),
+                context["BASE_DIR"],
                 statement
             ))
-        self._handle_spud(tree)
+        self._handle_spud(tree,context)

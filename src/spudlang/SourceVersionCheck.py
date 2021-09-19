@@ -51,7 +51,7 @@ def extract_version(raw):
 this_verison = {
     "major": 0,
     "minor": 4,
-    "patch": 0
+    "patch": 1
 }
 
 def verify_version(version):
