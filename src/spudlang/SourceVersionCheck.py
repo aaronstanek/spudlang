@@ -48,11 +48,14 @@ def extract_version(raw):
     last_index = get_version_last_index(raw,first_index)
     return raw[first_index:last_index]
 
+this_verison = {
+    "major": 0,
+    "minor": 4,
+    "patch": 0
+}
+
 def verify_version(version):
-    # info about this version
-    major_version = 0
-    minor_version = 4
-    patch_version = 0
+    global this_verison
     # compare
     sections = version.split(b'.')
     # we expect 1, 2, or 3 sections
@@ -71,19 +74,19 @@ def verify_version(version):
     while len(sections) < 3:
         sections.append(0)
     # major version
-    if sections[0] < major_version:
+    if sections[0] < this_verison["major"]:
         return True
-    if sections[0] > major_version:
+    if sections[0] > this_verison["major"]:
         return False
     # major versions are the same
-    if sections[1] < minor_version:
+    if sections[1] < this_verison["minor"]:
         return True
-    if sections[1] > minor_version:
+    if sections[1] > this_verison["minor"]:
         return False
     # minor versions are the same
-    if sections[2] < patch_version:
+    if sections[2] < this_verison["patch"]:
         return True
-    if sections[2] > patch_version:
+    if sections[2] > this_verison["patch"]:
         return False
     # versions are exactly the same
     return True
@@ -99,4 +102,10 @@ def source_version_check(raw):
     version = extract_version(raw)
     if version is None:
         return True
-    return verify_version(version)
+    version_compat = verify_version(version)
+    if version_compat:
+        return (True,)
+    else:
+        global this_verison
+        name = str(this_verison["major"]) + "." + str(this_verison["minor"]) + "." + str(this_verison["patch"])
+        return (False,"This is Spudlang version: "+name+" The source reports a version of: "+version.decode("UTF8"))

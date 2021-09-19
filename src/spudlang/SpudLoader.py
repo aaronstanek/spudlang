@@ -4,6 +4,7 @@
 import os
 import hashlib
 from copy import copy
+from .SourceVersionCheck import source_version_check
 import antlr4
 from antlr4.error.ErrorListener import ErrorListener
 from .Pattern import SinglePattern, DoublePattern
@@ -60,6 +61,14 @@ class SpudLoader(object):
             # register it so that we do not
             # need to process it again
             self.seen.add(file_hash)
+        # check the source version to make sure
+        # that it's compatible with this grammar
+        try:
+            version_compat = source_version_check(raw)
+        except:
+            raise Exception("Malformed version information in file: "+abs_path)
+        if not version_compat[0]:
+            raise Exception("Incompatible source version. Error Message: "+version_compat[1])
         # first convert the input to a string
         # and then to a stream
         raw_string = raw.decode("UTF-8")
