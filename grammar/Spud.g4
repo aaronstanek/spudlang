@@ -99,6 +99,7 @@ linestandardrule : linerenaming | lineprefixing
     | lineinserting | linesingleconverting | linedoubleconverting ;
 
 atimport : '@import' Inlinewhitespacetoken+ (~Returnwhitespacetoken)* ;
+atrun : '@run' Inlinewhitespacetoken+ (~Returnwhitespacetoken)* ;
 
 atsub1 : '$' Inlinewhitespacetoken+ pownamewithprops ;
 atsub2 : powname Inlinewhitespacetoken+ (powwildwithprops|'$') ;
@@ -117,7 +118,7 @@ atbegin : '@begin' Inlinewhitespacetoken+
 atend : Inlinewhitespacetoken* '@end' ;
 atsection : atbegin linebreak (line linebreak)* atend ;
 
-lineat : atimport | athold
+lineat : atimport | atrun | athold
     | atholdunit | atdec
     | atfrac | atsection ;
 
