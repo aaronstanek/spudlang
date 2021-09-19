@@ -68,7 +68,7 @@ class SpudLoader(object):
         except:
             raise Exception("Malformed version information in file: "+abs_path)
         if not version_compat[0]:
-            raise Exception("Incompatible source version. Error Message: "+version_compat[1])
+            raise Exception("Incompatible source version in file: "+abs_path+". Error Message: "+version_compat[1])
         # first convert the input to a string
         # and then to a stream
         raw_string = raw.decode("UTF-8")
