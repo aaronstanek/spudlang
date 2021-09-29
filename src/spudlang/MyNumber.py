@@ -117,18 +117,14 @@ class MyNumber(object):
         if not isinstance(other,MyNumber):
             raise TypeError("Expected other to be of type MyNumber")
         return self.as_float().value < other.as_float().value
-    def __le__(self,other):
-        if not isinstance(other,MyNumber):
-            raise TypeError("Expected other to be of type MyNumber")
-        return self.as_float().value <= other.as_float().value
     def __gt__(self,other):
         if not isinstance(other,MyNumber):
             raise TypeError("Expected other to be of type MyNumber")
         return self.as_float().value > other.as_float().value
+    def __le__(self,other):
+        return not (self > other)
     def __ge__(self,other):
-        if not isinstance(other,MyNumber):
-            raise TypeError("Expected other to be of type MyNumber")
-        return self.as_float().value >= other.as_float().value
+        return not (self < other)
     def __add__(self,other):
         if not isinstance(other,MyNumber):
             raise TypeError("Expected other to be of type MyNumber")
