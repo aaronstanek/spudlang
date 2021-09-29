@@ -57,6 +57,36 @@ class TestMyNumber(unittest.TestCase):
         a = MyNumber(1.6666666666)
         self.assertEqual(a.as_fraction(10).value,(5,3))
     
+    def test_comparison(self):
+        # lt
+        self.assertTrue( MyNumber((8,9)) < MyNumber(1.0) )
+        self.assertTrue( MyNumber(1.1) < MyNumber((3,2)) )
+        self.assertFalse( MyNumber((5,2)) < MyNumber(2.5) )
+        self.assertFalse( MyNumber(1.0) < MyNumber((8,9)) )
+        self.assertFalse( MyNumber((3,2)) < MyNumber(1.1) )
+        self.assertFalse( MyNumber(2.5) < MyNumber((5,2)) )
+        # le
+        self.assertTrue( MyNumber((8,9)) <= MyNumber(1.0) )
+        self.assertTrue( MyNumber(1.1) <= MyNumber((3,2)) )
+        self.assertTrue( MyNumber((5,2)) <= MyNumber(2.5) )
+        self.assertFalse( MyNumber(1.0) <= MyNumber((8,9)) )
+        self.assertFalse( MyNumber((3,2)) <= MyNumber(1.1) )
+        self.assertTrue( MyNumber(2.5) <= MyNumber((5,2)) )
+        # gt
+        self.assertFalse( MyNumber((8,9)) > MyNumber(1.0) )
+        self.assertFalse( MyNumber(1.1) > MyNumber((3,2)) )
+        self.assertFalse( MyNumber((5,2)) > MyNumber(2.5) )
+        self.assertTrue( MyNumber(1.0) > MyNumber((8,9)) )
+        self.assertTrue( MyNumber((3,2)) > MyNumber(1.1) )
+        self.assertFalse( MyNumber(2.5) > MyNumber((5,2)) )
+        # ge
+        self.assertFalse( MyNumber((8,9)) >= MyNumber(1.0) )
+        self.assertFalse( MyNumber(1.1) >= MyNumber((3,2)) )
+        self.assertTrue( MyNumber((5,2)) >= MyNumber(2.5) )
+        self.assertTrue( MyNumber(1.0) >= MyNumber((8,9)) )
+        self.assertTrue( MyNumber((3,2)) >= MyNumber(1.1) )
+        self.assertTrue( MyNumber(2.5) >= MyNumber((5,2)) )
+    
     def test_addition_fractions(self):
         a = MyNumber((13,9))
         b = MyNumber((7,9))
