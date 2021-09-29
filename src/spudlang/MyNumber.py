@@ -18,8 +18,8 @@ class MyNumber(object):
         if type(value) == float:
             if math.isnan(value) or math.isinf(value):
                 raise ValueError("Expected value to be regular")
-            if value < 0.0:
-                raise ValueError("Expected value to be nonnegative")
+            if value <= 0.0:
+                raise ValueError("Expected value to be positive")
             self.is_fraction = False
             self.value = value
         elif type(value) == tuple:
@@ -27,10 +27,8 @@ class MyNumber(object):
                 raise ValueError("Expected tuple to have length 2")
             if not all(map(lambda x: type(x) == int,value)):
                 raise TypeError("Expected tuple to contain only int")
-            if value[0] < 0:
-                raise ValueError("Expected first int to be nonnegative")
-            if value[1] < 1:
-                raise ValueError("Expected second int to be greater than zero")
+            if not all(map(lambda x: x > 0,value)):
+                raise ValueError("Expected both int to be positive")
             self.is_fraction = True
             self.value = value
         else:
