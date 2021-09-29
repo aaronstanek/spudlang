@@ -113,6 +113,22 @@ class MyNumber(object):
                 # now is too large
                 # it is the new upper bound
                 right = now
+    def __lt__(self,other):
+        if not isinstance(other,MyNumber):
+            raise TypeError("Expected other to be of type MyNumber")
+        return self.as_float().value < other.as_float().value
+    def __le__(self,other):
+        if not isinstance(other,MyNumber):
+            raise TypeError("Expected other to be of type MyNumber")
+        return self.as_float().value <= other.as_float().value
+    def __gt__(self,other):
+        if not isinstance(other,MyNumber):
+            raise TypeError("Expected other to be of type MyNumber")
+        return self.as_float().value > other.as_float().value
+    def __ge__(self,other):
+        if not isinstance(other,MyNumber):
+            raise TypeError("Expected other to be of type MyNumber")
+        return self.as_float().value >= other.as_float().value
     def __add__(self,other):
         if not isinstance(other,MyNumber):
             raise TypeError("Expected other to be of type MyNumber")
