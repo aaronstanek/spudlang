@@ -568,7 +568,7 @@ class SpudLoader(object):
         for child in tree.children:
             if isinstance(child,SpudParser.LineContext):
                 self._handle_line(child,context)
-    def recursive_load_parse(self,abs_path,force=False,context=None):
+    def recursive_load_parse(self,abs_path,force,context=None):
         # abs_path is a string with the absolute file path to load
         tree = self.get_tree(abs_path,force)
         if tree is None:
@@ -582,7 +582,9 @@ class SpudLoader(object):
         context["BASE_DIR"] = os.path.dirname(abs_path)
         for statement in imports:
             self.recursive_load_parse(self.resolve_import_path(
-                context["BASE_DIR"],
-                statement
-            ))
+                    context["BASE_DIR"],
+                    statement
+                    ),
+                False
+                )
         self._handle_spud(tree,context)

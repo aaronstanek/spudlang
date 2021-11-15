@@ -13,7 +13,7 @@ def main():
     else:
         initial_path = os.path.join(os.getcwd(),sys.argv[1])
     loader = SpudLoader()
-    loader.recursive_load_parse(initial_path)
+    loader.recursive_load_parse(initial_path,True)
     rulebox = RuleBox()
     rulebox.add(loader.rules)
     html = rulebox.resolve_to_html_document(loader.ingredients)
