@@ -50,8 +50,8 @@ class SpudLoader(object):
         else:
             expect = ".spudh"
             alt = ".spud"
-        if path[-len(expect)] != expect:
-            if path[-len(alt)] != expect:
+        if path[:-len(expect)] != expect:
+            if path[:-len(alt)] != expect:
                 path = path + expect
             else:
                 if force:
@@ -63,7 +63,7 @@ class SpudLoader(object):
             with open(path,"rb") as file:
                 return file.read()
         elif os.path.isfile(path[:-len(expect)] + alt):
-            Exception("Unable to locate file: "+path+" Please check file type.")
+            raise Exception("Unable to locate file: "+path+" Please check file type.")
         else:
             raise Exception("Unable to locate file: "+path)
     def get_tree(self,abs_path,force):
