@@ -39,12 +39,31 @@ class SpudLoader(object):
         self.rules = []
         self.seen = set() # sha256 hashes of files
     @staticmethod
-    def load_file_raw(path):
-        if path[-5:] != ".spud":
-            path = path + ".spud"
+    def load_file_raw(path,force):
+        # force indicates if we need to read from the hard drive
+        # force is a bool. True means load outside the normal import system
+        # if True, we are loading a spud file
+        # if False, we are loading a spudh file
+        if force:
+            expect = ".spud"
+            alt = ".spudh"
+        else:
+            expect = ".spudh"
+            alt = ".spud"
+        if path[-len(expect)] != expect:
+            if path[-len(alt)] != expect:
+                path = path + expect
+            else:
+                if force:
+                    raise Exception("Tried to run file " + path + " as type .spud")
+                else:
+                    raise Exception("Tried to import file " + path + " as type .spudh")
+        # we now have the correct file type
         if os.path.isfile(path):
             with open(path,"rb") as file:
                 return file.read()
+        elif os.path.isfile(path[:-len(expect)] + alt):
+            Exception("Unable to locate file: "+path+" Please check file type.")
         else:
             raise Exception("Unable to locate file: "+path)
     def get_tree(self,abs_path,force):
@@ -52,7 +71,7 @@ class SpudLoader(object):
         # force is a bool. True means load outside the normal import system
         # returns either the syntax tree for the source file
         # or None
-        raw = self.load_file_raw(abs_path)
+        raw = self.load_file_raw(abs_path,force)
         if not force:
             file_hash = hashlib.sha256(raw).digest()
             if file_hash in self.seen:
