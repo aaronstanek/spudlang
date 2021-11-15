@@ -50,8 +50,8 @@ class SpudLoader(object):
         else:
             expect = ".spudh"
             alt = ".spud"
-        if path[:-len(expect)] != expect:
-            if path[:-len(alt)] != expect:
+        if path[-len(expect):] != expect:
+            if path[-len(alt):] != alt:
                 path = path + expect
             else:
                 if force:
