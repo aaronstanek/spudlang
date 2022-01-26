@@ -1,5 +1,8 @@
 # defined source_version_check function
 
+from sympy import sec
+
+
 def get_version_first_index(raw):
     # look for version~~ starting in the first 32 bytes
     # return first index of version if found
@@ -50,8 +53,8 @@ def extract_version(raw):
 
 this_verison = {
     "major": 0,
-    "minor": 4,
-    "patch": 1
+    "minor": 5,
+    "patch": 0
 }
 
 def verify_version(version):
@@ -77,6 +80,10 @@ def verify_version(version):
     if sections[0] != this_verison["major"]:
         return False
     # major versions are the same
+    if sections[1] < 5:
+        return False
+        # because 0.5.0 introduced breaking changes
+        # we cannot process any files before this
     if sections[1] < this_verison["minor"]:
         return True
     if sections[1] > this_verison["minor"]:
