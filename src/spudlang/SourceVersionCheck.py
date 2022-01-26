@@ -1,8 +1,5 @@
 # defined source_version_check function
 
-from sympy import sec
-
-
 def get_version_first_index(raw):
     # look for version~~ starting in the first 32 bytes
     # return first index of version if found
