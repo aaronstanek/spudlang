@@ -22,6 +22,17 @@ write the names of the recipes you want to make and presto!
 Spud will output a grocery shopping list that contains what you need to buy.
 You can even scale the quantities of ingredients, recipes, or entire shopping lists as needed.
 
+## Installation
+
+The Spud interpreter is hosted through [PyPI](https://pypi.org/project/spudlang/)
+and can be downloaded using [pip](https://pip.pypa.io/en/stable/).
+
+To install Spud, use:
+
+```
+pip install spudlang
+```
+
 ## Easy Syntax
 
 The syntax is designed to closely follow the English language
@@ -59,7 +70,7 @@ set of ingredients and normalize it into some standard form.
 
 ## Organization
 
-Consider the following Spud program:
+Spud keeps things organized:
 
 ```
 apples are a type of fruit
@@ -94,4 +105,9 @@ The output of the above program is:
 ```
 
 The two lines calling for apples were converted into the same units
-and added. Apples and bananas were categorized together as fruit.
+and added into a single line item.
+Apples and bananas were categorized together as fruit.
+
+## License
+
+Spudlang is released using the MIT License.
